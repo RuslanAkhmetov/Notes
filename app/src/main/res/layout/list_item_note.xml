@@ -7,15 +7,16 @@
     <TextView
         android:id="@+id/note_name"
         android:layout_width="match_parent"
-        android:textSize="20dp"
+        android:textSize="24sp"
         android:layout_height="wrap_content"
-        android:text="Note name"/>
+        android:text="@string/note_name"/>
 
 
     <TextView
         android:id="@+id/note_date"
+        android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Note date"/>
+        android:text="@string/note_date"/>
 
 </LinearLayout>

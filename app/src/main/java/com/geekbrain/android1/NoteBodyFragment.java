@@ -32,7 +32,7 @@ public class NoteBodyFragment extends Fragment {
 
     private static final String NOTE_UUID = "uuid";
 
-    private static final String TAG = " NoteBody_Fragment";
+    private static final String TAG = "NoteBody_Fragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -67,6 +67,8 @@ public class NoteBodyFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override

@@ -14,9 +14,11 @@ import java.util.UUID;
 public class NotesViewModel extends ViewModel {
     private MutableLiveData<List<Note>> notes;
 
+
+
     public LiveData<List<Note>> getNotes() {
         if (notes == null){
-            notes = new MutableLiveData<List<Note>>();
+            notes = new MutableLiveData<>();
             init (20);
         }
         return notes;
@@ -24,12 +26,16 @@ public class NotesViewModel extends ViewModel {
 
     public Note getNote(UUID uuid){
         if(notes == null) throw new NullPointerException("Note is not initialized");
-        List<Note> list = notes.getValue();
-        for (Note note: list) {
-            if (note.getUuid() == uuid)
-                return note;
+        try {
+            List<Note> list = notes.getValue();
+            for (Note note: list) {
+                if (note.getUuid() == uuid)
+                    return note;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("There is no Note with uuid: " + uuid);
         }
-        throw new RuntimeException("There is no Note with uuid: " + uuid );
+        return null;
     }
 
 

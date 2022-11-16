@@ -1,10 +1,12 @@
 package com.geekbrain.android1;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +27,9 @@ import java.util.UUID;
  * create an instance of this fragment.
  */
 public class NotesFragment extends Fragment {
+    private static final String NOTE_UUID = "uuid";
+    private UUID uuidFragment;
+    private final String TAG = "Notes_Fragment";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,7 +73,15 @@ public class NotesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (uuidFragment!=null) {
+            outState.putSerializable(NOTE_UUID, uuidFragment);
+        }
+        super.onSaveInstanceState(outState);
+     }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -77,36 +91,60 @@ public class NotesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if(savedInstanceState != null)
+            uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
 
-        model.getNotes().observe(getActivity(), notes -> {
-            fragmentInit(view, notes);
-        });
+        model.getNotes().observe(requireActivity(),
+                notes -> fragmentInit((ViewGroup) view, notes));
     }
 
-    private void fragmentInit ( View parent, List<Note> notes) {
+    private void fragmentInit ( ViewGroup parent, List<Note> notes) {
+        LayoutInflater layoutInflater = getLayoutInflater();
         for (Note note : notes) {
-            LayoutInflater layoutInflater = getLayoutInflater();
             View view = layoutInflater.inflate(R.layout.list_item_note, null,  false);
             TextView nName = view.findViewById(R.id.note_name);
             TextView nDate = view.findViewById(R.id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-            ((ViewGroup) parent).addView(view);
-            nName.setOnClickListener(v-> showNote(note.getUuid()));
+            uuidFragment = note.getUuid();
+            view.setOnClickListener(v-> showNote(note.getUuid()));
+            parent.addView(view);
 //            Log.d(TAG, "Created " + note.getName());
         }
 
     }
 
-    private void showNote(UUID uuid) {
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
-        int fragmentManager = requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, noteBodyFragment)
-                        .commit();
+    private boolean isLandscape(){
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private final String TAG = "Notes_Fragment";
+    private void showNote(UUID uuid) {
+        uuidFragment = uuid;
+        if (isLandscape()) {
+            showLandNote(uuid);
+        } else {
+            showPortNode(uuid);
+        }
+    }
+
+    private void showLandNote(UUID uuid) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.note_body_container, noteBodyFragment)
+                .commit();
+    }
+
+    private void showPortNode(UUID uuid) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, noteBodyFragment)
+                .addToBackStack("")
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+    }
+
 }
