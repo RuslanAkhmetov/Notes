@@ -16,7 +16,7 @@ public class NotesViewModel extends ViewModel {
     public LiveData<List<Note>> getNotes() {
         if (notes == null){
             notes = new MutableLiveData<List<Note>>();
-            init (100);
+            init (20);
         }
         return notes;
     }

@@ -2,11 +2,22 @@ package com.geekbrain.android1;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.geekbrain.android1.viewmodel.NotesViewModel;
+
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +60,7 @@ public class NotesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -59,6 +71,35 @@ public class NotesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_notes, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+
+        model.getNotes().observe(getActivity(), notes -> {
+            fragmentInit(view, notes);
+        });
+    }
+
+    private void fragmentInit ( View parent, List<Note> notes) {
+        for (Note note : notes) {
+            LayoutInflater layoutInflater = getLayoutInflater();
+            View view = layoutInflater.inflate(R.layout.list_item_mote, null,  false);
+            TextView nName = view.findViewById(R.id.note_name);
+            TextView nBody = view.findViewById(R.id.note_body);
+            TextView nDate = view.findViewById(R.id.note_date);
+            nName.setText(note.getName());
+            nBody.setText(note.getBody());
+            nDate.setText(note.getNoteDate().toString());
+            ((ViewGroup) parent).addView(view);
+//            Log.d(TAG, "Created " + note.getName());
+        }
+
+    }
+
+    private final String TAG = "Notes_Fragment";
 }
