@@ -1,6 +1,7 @@
 package com.geekbrain.android1;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Note {
     public String getName() {
@@ -8,6 +9,7 @@ public class Note {
     }
 
     public Note(String name, String body, Date noteDate) {
+        this.uuid = UUID.randomUUID();
         this.name = name;
         this.body = body;
         this.noteDate = noteDate;
@@ -31,6 +33,12 @@ public class Note {
 
     public void setNoteDate(Date noteDate) {
         this.noteDate = noteDate;
+    }
+
+    private UUID uuid;
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     private String name = "";

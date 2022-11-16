@@ -9,6 +9,7 @@ import com.geekbrain.android1.Note;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class NotesViewModel extends ViewModel {
     private MutableLiveData<List<Note>> notes;
@@ -20,6 +21,17 @@ public class NotesViewModel extends ViewModel {
         }
         return notes;
     }
+
+    public Note getNote(UUID uuid){
+        if(notes == null) throw new NullPointerException("Note is not initialized");
+        List<Note> list = notes.getValue();
+        for (Note note: list) {
+            if (note.getUuid() == uuid)
+                return note;
+        }
+        throw new RuntimeException("There is no Note with uuid: " + uuid );
+    }
+
 
     public int currentNote = 0;
 
