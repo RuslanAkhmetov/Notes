@@ -5,10 +5,15 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.constraintlayout.widget.Group;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +114,7 @@ public class NotesFragment extends Fragment {
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
             uuidFragment = note.getUuid();
-            view.setOnClickListener(v-> showNote(note.getUuid()));
+            view.setOnClickListener(v-> showNote(v, note.getUuid()));
             parent.addView(view);
 //            Log.d(TAG, "Created " + note.getName());
         }
@@ -120,31 +125,37 @@ public class NotesFragment extends Fragment {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private void showNote(UUID uuid) {
+    private void showNote(View view, UUID uuid) {
         uuidFragment = uuid;
         if (isLandscape()) {
-            showLandNote(uuid);
+
+            showLandNote(view, uuid);
         } else {
-            showPortNode(uuid);
+            showPortNode(view, uuid);
         }
     }
 
-    private void showLandNote(UUID uuid) {
+    private void showLandNote(View view, UUID uuid) {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.note_body_container, noteBodyFragment)
+
                 .commit();
     }
 
-    private void showPortNode(UUID uuid) {
+    private void showPortNode(View view, UUID uuid) {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+        View list_layout  = requireActivity().findViewById (R.id.nested_scroll_view);
+        list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, noteBodyFragment)
+                .add(R.id.note_body_container, noteBodyFragment)
                 .addToBackStack("")
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }
+
+
 
 }

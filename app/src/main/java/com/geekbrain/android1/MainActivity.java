@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.View;
 
 import java.util.UUID;
 
@@ -22,19 +23,29 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState != null)
             uuid = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+
+        /*if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
             getSupportFragmentManager()
                     .beginTransaction()
+                    .add(R.id.fragment_container, notesFragment)
                     .replace(R.id.note_body_container, NoteBodyFragment.newInstance(uuid))
                     .commit();
-        } else {
-
+        } else {*/
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, notesFragment)
+                    .add(R.id.fragment_container, notesFragment)
+                    .replace(R.id.note_body_container, noteBodyFragment )
                     .commit();
-        }
+//        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        View list_layout  = findViewById (R.id.nested_scroll_view);
+        list_layout.setVisibility(View.VISIBLE);
     }
 
     @Override
