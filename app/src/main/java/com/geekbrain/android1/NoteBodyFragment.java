@@ -34,7 +34,7 @@ public class NoteBodyFragment extends Fragment {
 
     private static final String TAG = "NoteBody_Fragment";
 
-    private UUID uuidFragment;
+    private static UUID uuidFragment;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -100,28 +100,31 @@ public class NoteBodyFragment extends Fragment {
             uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
         }
 
-        if (uuidFragment != null) {
-
-            try {
+        try {
+            if (uuidFragment != null) {
                 Note note = model.getNote(uuidFragment);
-                Log.i(TAG, "Uuid: " + (UUID) arguments.getSerializable(NOTE_UUID));
+                Log.i(TAG, "UuidFragment: " + uuidFragment);
                 TextView nameText = view.findViewById(R.id.note_name);
                 TextView bodyText = view.findViewById(R.id.note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
                 dateText.setText(note.getNoteDate().toString());
-            } catch (Exception e) {
+            } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
             }
-        }
+
+        }catch (Exception e) {
+                Log.i(TAG, "Exception: Can't make  NoteBodyFragment");
+            }
+
     }
 
     public static NoteBodyFragment newInstance(UUID uuid) {
         NoteBodyFragment fragment = new NoteBodyFragment();
+        uuidFragment = uuid;
         Bundle args = new Bundle();
         if (uuid != null) {
-
             args.putSerializable(NOTE_UUID, uuid);
         } else {
             args.getSerializable(NOTE_UUID);

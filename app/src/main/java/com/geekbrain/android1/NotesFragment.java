@@ -139,8 +139,8 @@ public class NotesFragment extends Fragment {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.note_body_container, noteBodyFragment)
-
+                .add(R.id.note_body_container, noteBodyFragment)
+                .addToBackStack("")
                 .commit();
     }
 

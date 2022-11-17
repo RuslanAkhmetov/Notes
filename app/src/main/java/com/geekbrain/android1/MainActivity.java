@@ -1,18 +1,22 @@
 package com.geekbrain.android1;
 
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.View;
 
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String NOTE_UUID = "uuid";
-    private UUID uuid;
+    private UUID uuidActivity;
+
+    private static final String  TAG ="Main_Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,37 +24,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         NotesFragment notesFragment = new NotesFragment();
 
-        if(savedInstanceState != null)
-            uuid = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
+        if (savedInstanceState != null)
+            uuidActivity = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
 
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+        Log.i(TAG, "On Create uuuiActivity: " + uuidActivity);
 
-        /*if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuidActivity);
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, notesFragment)
-                    .replace(R.id.note_body_container, NoteBodyFragment.newInstance(uuid))
-                    .commit();
-        } else {*/
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, notesFragment)
-                    .replace(R.id.note_body_container, noteBodyFragment )
-                    .commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.note_body_container, noteBodyFragment)
+                .replace(R.id.fragment_container, notesFragment)
+                .commit();
 //        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        View list_layout  = findViewById (R.id.nested_scroll_view);
+        View list_layout = findViewById(R.id.nested_scroll_view);
         list_layout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        outState.putSerializable(NOTE_UUID, uuid);
+        outState.putSerializable(NOTE_UUID, uuidActivity);
         super.onSaveInstanceState(outState, outPersistentState);
     }
 }
