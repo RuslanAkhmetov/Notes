@@ -34,11 +34,16 @@ public class NoteBodyFragment extends Fragment {
 
     private static final String TAG = "NoteBody_Fragment";
 
-    private static UUID uuidFragment;
+    private  UUID uuidFragment;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    public NoteBodyFragment(int contentLayoutId, UUID uuidFragment) {
+        super(contentLayoutId);
+        this.uuidFragment = uuidFragment;
+    }
 
     public NoteBodyFragment() {
         // Required empty public constructor
@@ -68,6 +73,8 @@ public class NoteBodyFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            uuidFragment = (UUID) getArguments().getSerializable(NOTE_UUID);
+
         }
     }
 
@@ -80,29 +87,41 @@ public class NoteBodyFragment extends Fragment {
 
     }
 
-    @Override
+   /* @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putSerializable(NOTE_UUID, uuidFragment);
         super.onSaveInstanceState(outState);
 
-    }
+    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         Bundle arguments = getArguments();
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-
+/*
         if (arguments != null) {
             uuidFragment = (UUID) arguments.getSerializable(NOTE_UUID);
         } else {
-            uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
+//            uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
+        }*/
+
+        if (uuidFragment == null ){
+            if (model.getCurrentNote() == null) {
+                uuidFragment = model.getFirst().getUuid();
+            } else {
+                uuidFragment = model.getCurrentNote().getUuid();
+            }
+
         }
+
 
         try {
             if (uuidFragment != null) {
                 Note note = model.getNote(uuidFragment);
+                model.setCurrentNote(note);
                 Log.i(TAG, "UuidFragment: " + uuidFragment);
                 TextView nameText = view.findViewById(R.id.note_name);
                 TextView bodyText = view.findViewById(R.id.note_body);
@@ -122,16 +141,15 @@ public class NoteBodyFragment extends Fragment {
 
     public static NoteBodyFragment newInstance(UUID uuid) {
         NoteBodyFragment fragment = new NoteBodyFragment();
-        uuidFragment = uuid;
-        Bundle args = new Bundle();
+//        uuidFragment = uuid;
+
         if (uuid != null) {
+            Bundle args = new Bundle();
             args.putSerializable(NOTE_UUID, uuid);
-        } else {
-            args.getSerializable(NOTE_UUID);
+            fragment.setArguments(args);
         }
-        fragment.setArguments(args);
+
         return fragment;
     }
-
 
 }

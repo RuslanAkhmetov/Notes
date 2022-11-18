@@ -4,6 +4,8 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -22,21 +24,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         NotesFragment notesFragment = new NotesFragment();
 
-        if (savedInstanceState != null)
+        FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
+
+        if (savedInstanceState == null) {
+                    fragmentTransaction.add(R.id.fragment_container, notesFragment)
+                            .add(R.id.note_body_container, NoteBodyFragment.newInstance(null));
+
+        } else {
             uuidActivity = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
-
-        Log.i(TAG, "On Create uuuiActivity: " + uuidActivity);
-
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuidActivity);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.note_body_container, noteBodyFragment)
-                .replace(R.id.fragment_container, notesFragment)
-                .commit();
-//        }
+            Log.i(TAG, "On Create uuidActivity: " + uuidActivity);
+                    fragmentTransaction.replace(R.id.fragment_container, notesFragment)
+                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(null));
+//                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(uuidActivity));
+        }
+        fragmentTransaction.commit();
+//
     }
 
     @Override
