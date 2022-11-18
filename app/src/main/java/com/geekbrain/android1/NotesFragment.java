@@ -100,9 +100,10 @@ public class NotesFragment extends Fragment {
             uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-
-        model.getNotes().observe(requireActivity(),
-                notes -> fragmentInit((ViewGroup) view, notes));
+        if (savedInstanceState == null) {
+            model.getNotes().observe(requireActivity(),
+                    notes -> fragmentInit((ViewGroup) view, notes));
+        }
     }
 
     private void fragmentInit ( ViewGroup parent, List<Note> notes) {
@@ -140,7 +141,6 @@ public class NotesFragment extends Fragment {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.note_body_container, noteBodyFragment)
-
                 .commit();
     }
 
@@ -155,7 +155,5 @@ public class NotesFragment extends Fragment {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }
-
-
 
 }
