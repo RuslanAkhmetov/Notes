@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -40,32 +39,22 @@ public class NoteBodyFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public NoteBodyFragment(int contentLayoutId, UUID uuidFragment) {
-        super(contentLayoutId);
-        this.uuidFragment = uuidFragment;
-    }
 
     public NoteBodyFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoteBodyFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static NoteBodyFragment newInstance(String param1, String param2) {
+    public static NoteBodyFragment newInstance(UUID uuid) {
         NoteBodyFragment fragment = new NoteBodyFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        if (uuid != null) {
+            Bundle args = new Bundle();
+            args.putSerializable(NOTE_UUID, uuid);
+            fragment.setArguments(args);
+        }
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +63,6 @@ public class NoteBodyFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             uuidFragment = (UUID) getArguments().getSerializable(NOTE_UUID);
-
         }
     }
 
@@ -84,15 +72,7 @@ public class NoteBodyFragment extends Fragment {
         // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_note_body, container, false);
-
     }
-
-   /* @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putSerializable(NOTE_UUID, uuidFragment);
-        super.onSaveInstanceState(outState);
-
-    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -101,22 +81,11 @@ public class NoteBodyFragment extends Fragment {
         Bundle arguments = getArguments();
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-/*
-        if (arguments != null) {
-            uuidFragment = (UUID) arguments.getSerializable(NOTE_UUID);
-        } else {
-//            uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
-        }*/
 
         if (uuidFragment == null ){
-            if (model.getCurrentNote() == null) {
-                uuidFragment = model.getFirst().getUuid();
-            } else {
-                uuidFragment = model.getCurrentNote().getUuid();
-            }
-
+                uuidFragment = model.getCurrentNote() == null? model.getFirst().getUuid()
+                        : model.getCurrentNote().getUuid();
         }
-
 
         try {
             if (uuidFragment != null) {
@@ -132,24 +101,12 @@ public class NoteBodyFragment extends Fragment {
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
             }
-
         }catch (Exception e) {
                 Log.i(TAG, "Exception: Can't make  NoteBodyFragment");
             }
 
     }
 
-    public static NoteBodyFragment newInstance(UUID uuid) {
-        NoteBodyFragment fragment = new NoteBodyFragment();
-//        uuidFragment = uuid;
 
-        if (uuid != null) {
-            Bundle args = new Bundle();
-            args.putSerializable(NOTE_UUID, uuid);
-            fragment.setArguments(args);
-        }
-
-        return fragment;
-    }
 
 }

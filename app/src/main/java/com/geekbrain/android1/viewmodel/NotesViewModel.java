@@ -54,9 +54,6 @@ public class NotesViewModel extends ViewModel {
         return currentNote;
     }
 
-
-
-
     private void init(int num){
          List<Note> list = new ArrayList<>() ;
         for (int i = 0; i < num; i++) {

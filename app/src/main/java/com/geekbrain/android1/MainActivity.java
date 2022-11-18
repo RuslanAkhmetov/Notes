@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "On Create");
                     fragmentTransaction.replace(R.id.fragment_container, notesFragment)
                             .replace(R.id.note_body_container, NoteBodyFragment.newInstance(null));
-//                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(uuidActivity));
         }
         fragmentTransaction.commit();
 //
