@@ -31,9 +31,8 @@ import java.util.UUID;
  * Use the {@link NotesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class NotesFragment extends Fragment {
-    private static final String NOTE_UUID = "uuid";
-    private UUID uuidFragment;
     private final String TAG = "Notes_Fragment";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -77,13 +76,6 @@ public class NotesFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        if (uuidFragment!=null) {
-            outState.putSerializable(NOTE_UUID, uuidFragment);
-        }
-        super.onSaveInstanceState(outState);
-     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -96,9 +88,6 @@ public class NotesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(savedInstanceState != null)
-            uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
-
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
         if (savedInstanceState == null) {
             model.getNotes().observe(requireActivity(),
@@ -114,7 +103,6 @@ public class NotesFragment extends Fragment {
             TextView nDate = view.findViewById(R.id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-            uuidFragment = note.getUuid();
             view.setOnClickListener(v-> showNote(v, note.getUuid()));
             parent.addView(view);
 //            Log.d(TAG, "Created " + note.getName());
@@ -127,9 +115,7 @@ public class NotesFragment extends Fragment {
     }
 
     private void showNote(View view, UUID uuid) {
-        uuidFragment = uuid;
         if (isLandscape()) {
-
             showLandNote(view, uuid);
         } else {
             showPortNode(view, uuid);

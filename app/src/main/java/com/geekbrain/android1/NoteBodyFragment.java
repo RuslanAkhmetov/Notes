@@ -33,7 +33,7 @@ public class NoteBodyFragment extends Fragment {
 
     private static final String TAG = "NoteBody_Fragment";
 
-    private  UUID uuidFragment;
+    private UUID uuidFragment;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -53,6 +53,10 @@ public class NoteBodyFragment extends Fragment {
             fragment.setArguments(args);
         }
         return fragment;
+    }
+
+    public static NoteBodyFragment newInstance() {
+        return new NoteBodyFragment();
     }
 
 
@@ -82,9 +86,9 @@ public class NoteBodyFragment extends Fragment {
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
 
-        if (uuidFragment == null ){
-                uuidFragment = model.getCurrentNote() == null? model.getFirst().getUuid()
-                        : model.getCurrentNote().getUuid();
+        if (uuidFragment == null) {
+            uuidFragment = model.getCurrentNote() == null ? model.getFirst().getUuid()
+                    : model.getCurrentNote().getUuid();
         }
 
         try {
@@ -101,12 +105,11 @@ public class NoteBodyFragment extends Fragment {
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
             }
-        }catch (Exception e) {
-                Log.i(TAG, "Exception: Can't make  NoteBodyFragment");
-            }
+        } catch (Exception e) {
+            Log.i(TAG, "Exception: Can't make  NoteBodyFragment");
+        }
 
     }
-
 
 
 }
