@@ -66,7 +66,7 @@ public class NotesViewModel extends ViewModel {
             String month = String.valueOf(m).length() == 1 ? "0" + m : String.valueOf(m);
 
             String date = day+"-"+month+"-"+"2022";
-            int backGroundColor = com.google.android.material.R.color.design_default_color_background;
+            int backGroundColor = com.google.android.material.R.color.material_dynamic_neutral80;
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
             list.add(new Note("Notes " + i, "This is note " + i, LocalDate.parse(date, dateTimeFormatter), backGroundColor));
             System.out.println("LOCAL date = " + LocalDate.parse(date, dateTimeFormatter));

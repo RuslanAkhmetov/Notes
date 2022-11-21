@@ -1,19 +1,16 @@
 package com.geekbrain.android1;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Group;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,12 +96,13 @@ public class NotesFragment extends Fragment {
         LayoutInflater layoutInflater = getLayoutInflater();
         for (Note note : notes) {
             View view = layoutInflater.inflate(R.layout.list_item_note, null,  false);
-            view.setBackgroundColor(note.getBackColor());
             TextView nName = view.findViewById(R.id.note_name);
             TextView nDate = view.findViewById(R.id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-            view.setOnClickListener(v-> showNote(v, note.getUuid()));
+            view.setOnClickListener(v-> showNote(v, note));
+            //view.setBackground(Drawable.createFromPath("@drawable/frame_border"));
+            view.setBackgroundColor(note.getBackColor());
             parent.addView(view);
 //            Log.d(TAG, "Created " + note.getName());
         }
@@ -115,24 +113,24 @@ public class NotesFragment extends Fragment {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private void showNote(View view, UUID uuid) {
+    private void showNote(View view, Note note) {
         if (isLandscape()) {
-            showLandNote(view, uuid);
+            showLandNote(view, note);
         } else {
-            showPortNode(view, uuid);
+            showPortNode(view, note);
         }
     }
 
-    private void showLandNote(View view, UUID uuid) {
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+    private void showLandNote(View view, Note note) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.note_body_container, noteBodyFragment)
                 .commit();
     }
 
-    private void showPortNode(View view, UUID uuid) {
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+    private void showPortNode(View view, Note note) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         View list_layout  = requireActivity().findViewById (R.id.nested_scroll_view);
         list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()

@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
@@ -30,10 +33,12 @@ public class NoteBodyFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private static final String NOTE_UUID = "uuid";
+    private static final String NOTE = "note";
 
     private static final String TAG = "NoteBody_Fragment";
 
     private UUID uuidFragment;
+    private Note note;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -50,6 +55,16 @@ public class NoteBodyFragment extends Fragment {
         if (uuid != null) {
             Bundle args = new Bundle();
             args.putSerializable(NOTE_UUID, uuid);
+            fragment.setArguments(args);
+        }
+        return fragment;
+    }
+
+    public static NoteBodyFragment newInstance(Note note) {
+        NoteBodyFragment fragment = new NoteBodyFragment();
+        if (note != null) {
+            Bundle args = new Bundle();
+            args.putParcelable(NOTE, note);
             fragment.setArguments(args);
         }
         return fragment;
@@ -83,32 +98,48 @@ public class NoteBodyFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle arguments = getArguments();
+        if (arguments != null) {
+            note = arguments.getParcelable(NOTE);
+        }
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
 
-        if (uuidFragment == null) {
-            uuidFragment = model.getCurrentNote() == null ? model.getFirst().getUuid()
-                    : model.getCurrentNote().getUuid();
+        if (note == null) {
+            note = model.getCurrentNote() == null ? model.getFirst()
+                    : model.getCurrentNote();
         }
 
         try {
-            if (uuidFragment != null) {
-                Note note = model.getNote(uuidFragment);
+            if (note != null) {
+//                Note note = model.getNote(uuidFragment);
                 model.setCurrentNote(note);
-                Log.i(TAG, "UuidFragment: " + uuidFragment);
+                Log.i(TAG, "Fragment: " + note.getName());
+                view.setBackgroundColor(note.getBackColor());
                 TextView nameText = view.findViewById(R.id.note_name);
                 TextView bodyText = view.findViewById(R.id.note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
+                ImageButton paletteButton = view.findViewById(R.id.palette_button);
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
                 dateText.setText(note.getNoteDate().toString());
+                paletteButton.setOnClickListener(view1 -> showPalette());
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
             }
         } catch (Exception e) {
-            Log.i(TAG, "Exception: Can't make  NoteBodyFragment");
+            Log.i(TAG,  e.getMessage());
         }
 
+    }
+
+    private void showPalette() {
+        PaletteFragment paletteFragment = new PaletteFragment();
+        Log.i(TAG,"Button palette was clicked" + paletteFragment.toString());
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.note_body_container, paletteFragment)
+                .commit();
     }
 
 

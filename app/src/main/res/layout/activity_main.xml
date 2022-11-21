@@ -15,11 +15,12 @@
         app:layout_constraintEnd_toStartOf="@id/note_body_container"
         app:layout_constraintHorizontal_weight="1000"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <FrameLayout
             android:id="@+id/fragment_container"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </androidx.core.widget.NestedScrollView>
