@@ -99,6 +99,7 @@ public class NotesFragment extends Fragment {
         LayoutInflater layoutInflater = getLayoutInflater();
         for (Note note : notes) {
             View view = layoutInflater.inflate(R.layout.list_item_note, null,  false);
+            view.setBackgroundColor(note.getBackColor());
             TextView nName = view.findViewById(R.id.note_name);
             TextView nDate = view.findViewById(R.id.note_date);
             nName.setText(note.getName());

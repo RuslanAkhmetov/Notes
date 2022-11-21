@@ -3,7 +3,7 @@ package com.geekbrain.android1;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class Note implements Parcelable {
@@ -11,12 +11,19 @@ public class Note implements Parcelable {
         return name;
     }
 
-    public Note(String name, String body, Date noteDate) {
+    public Note(String name, String body, LocalDate noteDate, int backColor) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.body = body;
         this.noteDate = noteDate;
+        this.backColor = backColor;
+
     }
+
+    private String name;
+    private String body;
+    private LocalDate noteDate;
+    private int backColor;
 
     public void setName(String name) {
         this.name = name;
@@ -30,11 +37,11 @@ public class Note implements Parcelable {
         this.body = body;
     }
 
-    public Date getNoteDate() {
+    public LocalDate getNoteDate() {
         return noteDate;
     }
 
-    public void setNoteDate(Date noteDate) {
+    public void setNoteDate(LocalDate noteDate) {
         this.noteDate = noteDate;
     }
 
@@ -44,9 +51,14 @@ public class Note implements Parcelable {
         return uuid;
     }
 
-    private String name;
-    private String body;
-    private Date noteDate;
+    public int getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(int backColor) {
+        this.backColor = backColor;
+    }
+
 
     @Override
     public int describeContents() {
@@ -59,13 +71,15 @@ public class Note implements Parcelable {
         parcel.writeString(getName());
         parcel.writeString(getBody());
         parcel.writeSerializable(getNoteDate());
+        parcel.writeInt(getBackColor());
     }
 
     protected Note(Parcel parcel){
         uuid = (UUID) parcel.readSerializable();
         name = parcel.readString();
         body = parcel.readString();
-        noteDate = (Date) parcel.readSerializable();
+        noteDate = (LocalDate) parcel.readSerializable();
+        backColor = parcel.readInt();
     }
 
     public static final Creator <Note> CREATOR  = new Creator<Note>() {

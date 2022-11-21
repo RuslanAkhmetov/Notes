@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.geekbrain.android1.Note;
+import com.geekbrain.android1.R;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,9 +60,16 @@ public class NotesViewModel extends ViewModel {
     private void init(int num){
          List<Note> list = new ArrayList<>() ;
         for (int i = 0; i < num; i++) {
-            int m = 1 + i/30;
             int d = i % 30==0 ? 30 : i % 30;
-            list.add(new Note("Notes " + i, "This is note " + i, new Date()));
+            String day = String.valueOf(d).length()==1 ? "0"+d: String.valueOf(d);
+            int m = 1 + i/30;
+            String month = String.valueOf(m).length() == 1 ? "0" + m : String.valueOf(m);
+
+            String date = day+"-"+month+"-"+"2022";
+            int backGroundColor = com.google.android.material.R.color.design_default_color_background;
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+            list.add(new Note("Notes " + i, "This is note " + i, LocalDate.parse(date, dateTimeFormatter), backGroundColor));
+            System.out.println("LOCAL date = " + LocalDate.parse(date, dateTimeFormatter));
         }
         if (list != null)  notes.setValue(list);
     }
