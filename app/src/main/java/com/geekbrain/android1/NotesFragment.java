@@ -1,19 +1,16 @@
 package com.geekbrain.android1;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Group;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +28,8 @@ import java.util.UUID;
  * Use the {@link NotesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class NotesFragment extends Fragment {
-    private static final String NOTE_UUID = "uuid";
-    private UUID uuidFragment;
     private final String TAG = "Notes_Fragment";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -77,13 +73,6 @@ public class NotesFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        if (uuidFragment!=null) {
-            outState.putSerializable(NOTE_UUID, uuidFragment);
-        }
-        super.onSaveInstanceState(outState);
-     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -96,9 +85,6 @@ public class NotesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(savedInstanceState != null)
-            uuidFragment = (UUID) savedInstanceState.getSerializable(NOTE_UUID);
-
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
         if (savedInstanceState == null) {
             model.getNotes().observe(requireActivity(),
@@ -114,8 +100,9 @@ public class NotesFragment extends Fragment {
             TextView nDate = view.findViewById(R.id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-            uuidFragment = note.getUuid();
-            view.setOnClickListener(v-> showNote(v, note.getUuid()));
+            view.setOnClickListener(v-> showNote(v, note));
+            //view.setBackground(Drawable.createFromPath("@drawable/frame_border"));
+            view.setBackgroundColor(note.getBackColor());
             parent.addView(view);
 //            Log.d(TAG, "Created " + note.getName());
         }
@@ -126,26 +113,24 @@ public class NotesFragment extends Fragment {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private void showNote(View view, UUID uuid) {
-        uuidFragment = uuid;
+    private void showNote(View view, Note note) {
         if (isLandscape()) {
-
-            showLandNote(view, uuid);
+            showLandNote(view, note);
         } else {
-            showPortNode(view, uuid);
+            showPortNode(view, note);
         }
     }
 
-    private void showLandNote(View view, UUID uuid) {
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+    private void showLandNote(View view, Note note) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.note_body_container, noteBodyFragment)
                 .commit();
     }
 
-    private void showPortNode(View view, UUID uuid) {
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(uuid);
+    private void showPortNode(View view, Note note) {
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         View list_layout  = requireActivity().findViewById (R.id.nested_scroll_view);
         list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()
