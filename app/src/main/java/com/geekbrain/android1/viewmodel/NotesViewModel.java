@@ -1,5 +1,8 @@
 package com.geekbrain.android1.viewmodel;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -66,7 +69,7 @@ public class NotesViewModel extends ViewModel {
             String month = String.valueOf(m).length() == 1 ? "0" + m : String.valueOf(m);
 
             String date = day+"-"+month+"-"+"2022";
-            int backGroundColor = com.google.android.material.R.color.material_dynamic_neutral80;
+            int backGroundColor = Color.parseColor("#FFFFFF");
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
             list.add(new Note("Notes " + i, "This is note " + i, LocalDate.parse(date, dateTimeFormatter), backGroundColor));
             System.out.println("LOCAL date = " + LocalDate.parse(date, dateTimeFormatter));

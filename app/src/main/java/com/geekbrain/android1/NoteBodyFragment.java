@@ -1,5 +1,6 @@
 package com.geekbrain.android1;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -121,7 +122,9 @@ public class NoteBodyFragment extends Fragment {
                 ImageButton paletteButton = view.findViewById(R.id.palette_button);
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
+                bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
                 dateText.setText(note.getNoteDate().toString());
+
                 paletteButton.setOnClickListener(view1 -> showPalette());
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
@@ -133,8 +136,9 @@ public class NoteBodyFragment extends Fragment {
     }
 
     private void showPalette() {
-        PaletteFragment paletteFragment = new PaletteFragment();
-        Log.i(TAG,"Button palette was clicked" + paletteFragment.toString());
+        PaletteFragment paletteFragment = PaletteFragment.newInstance();
+        Log.i(TAG,"Button palette was clicked " + paletteFragment.toString());
+        Log.i(TAG, "BackColor:" + note.getBackColor());
 
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
