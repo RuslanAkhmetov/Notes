@@ -124,8 +124,10 @@ public class NoteBodyFragment extends Fragment {
                 bodyText.setText(note.getBody());
                 bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
                 dateText.setText(note.getNoteDate().toString());
-
-                paletteButton.setOnClickListener(view1 -> showPalette());
+                paletteButton.setOnClickListener(view1 -> {
+                    showPalette();
+                    view1.invalidate();
+            });
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
             }

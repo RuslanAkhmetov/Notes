@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="@string/note_date"
-        app:layout_constraintBottom_toTopOf="@+id/note_body"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/note_name" />
 
@@ -46,7 +46,10 @@
     <FrameLayout
         android:id="@+id/palette_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/note_body"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         />
 

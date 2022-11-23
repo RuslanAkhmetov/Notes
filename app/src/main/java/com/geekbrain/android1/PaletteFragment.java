@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
@@ -85,6 +86,15 @@ public class PaletteFragment extends Fragment {
                 : model.getCurrentNote();
 
         Log.i(TAG, "onViewCreated BackColor" + note.getBackColor());
+
+/*        TextView nameText = view.findViewById(R.id.note_name);
+        TextView bodyText = view.findViewById(R.id.note_body);
+        TextView dateText = view.findViewById(R.id.note_date);
+        ImageButton paletteButton = view.findViewById(R.id.palette_button);
+        nameText.setText(note.getName());
+        bodyText.setText(note.getBody());
+        bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
+        dateText.setText(note.getNoteDate().toString());*/
 
         ImageButton buttonPurple = view.findViewById(R.id.button_palette_purple);
         ImageButton buttonTeal = view.findViewById(R.id.button_palette_teal);
