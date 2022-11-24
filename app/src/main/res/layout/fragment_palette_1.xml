@@ -51,19 +51,14 @@
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageButton
-            android:id="@+id/palette_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:src="@drawable/baseline_palette_24" />
+
 
         <ImageButton
-            android:id="@+id/edit_button"
+            android:id="@+id/button_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_baseline_edit_24" />
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:layout_gravity="right"/>
 
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

@@ -126,6 +126,7 @@ public class NotesFragment extends Fragment {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.note_body_container, noteBodyFragment)
+                .addToBackStack("")
                 .commit();
     }
 

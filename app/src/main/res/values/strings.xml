@@ -6,4 +6,5 @@
     <string name="note_date">Note date</string>
     <string name="note_body">Note body</string>
     <string name="background_color">Background color</string>
+    <string name="EditToastText">Edit Cuurent Note</string>
 </resources>

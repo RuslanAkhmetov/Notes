@@ -100,6 +100,8 @@ public class PaletteFragment extends Fragment {
 
         ImageButton buttonPurple = view.findViewById(R.id.button_palette_purple);
         ImageButton buttonTeal = view.findViewById(R.id.button_palette_teal);
+        ImageButton backButton = view.findViewById(R.id.button_back);
+
 
         buttonTeal.setOnClickListener(v ->{
                     int color = getResources().getColor(R.color.teal_700, null);
@@ -109,6 +111,10 @@ public class PaletteFragment extends Fragment {
         buttonPurple.setOnClickListener(v ->{
                 int color = getResources().getColor(R.color.purple_200, null);
                 setNoteBackColor(v, color, note);
+        });
+
+        backButton.setOnClickListener(v-> {
+            requireActivity().getSupportFragmentManager().popBackStackImmediate();
         });
     }
 

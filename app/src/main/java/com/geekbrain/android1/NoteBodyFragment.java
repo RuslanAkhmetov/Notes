@@ -1,5 +1,6 @@
 package com.geekbrain.android1;
 
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
@@ -120,6 +122,9 @@ public class NoteBodyFragment extends Fragment {
                 TextView bodyText = view.findViewById(R.id.note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
                 ImageButton paletteButton = view.findViewById(R.id.palette_button);
+                ImageButton editButton = view.findViewById(R.id.edit_button);
+                ImageButton backButton = view.findViewById(R.id.button_back);
+
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
                 bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
@@ -127,26 +132,42 @@ public class NoteBodyFragment extends Fragment {
                 paletteButton.setOnClickListener(view1 -> {
                     showPalette();
                     view1.invalidate();
-            });
+                });
+                editButton.setOnClickListener(v -> {
+                    Toast.makeText(requireActivity(), getString(R.string.EditToastText), Toast.LENGTH_SHORT).show();
+                });
+
+                if(!isLandscape()) {
+
+                    backButton.setOnClickListener(v -> {
+                        requireActivity().onBackPressed();
+                    });
+                } else  {
+                    backButton.setVisibility(View.GONE);
+                }
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
             }
         } catch (Exception e) {
-            Log.i(TAG,  e.getMessage());
+            Log.i(TAG, e.getMessage());
         }
 
     }
 
     private void showPalette() {
         PaletteFragment paletteFragment = PaletteFragment.newInstance();
-        Log.i(TAG,"Button palette was clicked " + paletteFragment.toString());
+        Log.i(TAG, "Button palette was clicked " + paletteFragment.toString());
         Log.i(TAG, "BackColor:" + note.getBackColor());
 
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.note_body_container, paletteFragment)
+                .add(R.id.note_body_container, paletteFragment)
+                .addToBackStack("")
                 .commit();
     }
 
+    private boolean isLandscape(){
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
 
 }

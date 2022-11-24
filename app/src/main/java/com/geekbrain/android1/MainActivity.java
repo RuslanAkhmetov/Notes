@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
                     fragmentTransaction.add(R.id.fragment_container, notesFragment)
                             .add(R.id.note_body_container, NoteBodyFragment.newInstance());
-
         } else {
             Log.i(TAG, "On Create");
                     fragmentTransaction.replace(R.id.fragment_container, notesFragment)
