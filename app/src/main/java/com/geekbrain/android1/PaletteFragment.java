@@ -1,6 +1,5 @@
 package com.geekbrain.android1;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,10 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
@@ -100,7 +96,7 @@ public class PaletteFragment extends Fragment {
 
         ImageButton buttonPurple = view.findViewById(R.id.button_palette_purple);
         ImageButton buttonTeal = view.findViewById(R.id.button_palette_teal);
-        ImageButton backButton = view.findViewById(R.id.button_back);
+        ImageButton backButton = view.findViewById(R.id.back_action);
 
 
         buttonTeal.setOnClickListener(v ->{
@@ -113,9 +109,8 @@ public class PaletteFragment extends Fragment {
                 setNoteBackColor(v, color, note);
         });
 
-        backButton.setOnClickListener(v-> {
-            requireActivity().getSupportFragmentManager().popBackStackImmediate();
-        });
+        backButton.setOnClickListener(v->
+                requireActivity().getSupportFragmentManager().popBackStackImmediate());
     }
 
     private void setNoteBackColor(View v, int color, Note note) {

@@ -31,19 +31,19 @@ public class NotesViewModel extends ViewModel {
     private Note currentNote;
 
     public LiveData<List<Note>> getNotes() {
-        if (notes == null){
+        if (notes == null) {
             notes = new MutableLiveData<>();
-            init (20);
+            init(20);
         }
         return notes;
     }
 
-    public Note getNote(UUID uuid){
-        if(notes == null) throw new NullPointerException("Note is not initialized");
+    public Note getNote(UUID uuid) {
+        if (notes == null) throw new NullPointerException("Note is not initialized");
         try {
             List<Note> list = notes.getValue();
-            for (Note note: list) {
-                if (note.getUuid() == uuid){
+            for (Note note : list) {
+                if (note.getUuid() == uuid) {
                     currentNote = note;
                     return note;
                 }
@@ -54,27 +54,31 @@ public class NotesViewModel extends ViewModel {
         return null;
     }
 
-    public Note getFirst(){
-        if(notes == null || notes.getValue().size() == 0) throw new NullPointerException("Note is not initialized or empty");
+    public Note getFirst() {
+        if (notes == null || notes.getValue().size() == 0)
+            throw new NullPointerException("Note is not initialized or empty");
         currentNote = notes.getValue().get(0);
         return currentNote;
     }
 
-    private void init(int num){
-         List<Note> list = new ArrayList<>() ;
-        for (int i = 0; i < num; i++) {
-            int d = i % 30==0 ? 30 : i % 30;
-            String day = String.valueOf(d).length()==1 ? "0"+d: String.valueOf(d);
-            int m = 1 + i/30;
-            String month = String.valueOf(m).length() == 1 ? "0" + m : String.valueOf(m);
+    public Note remove (Note note){
+        notes.getValue().remove(note);
+        return getFirst();
+    }
 
-            String date = day+"-"+month+"-"+"2022";
+    private void init(int num) {
+        List<Note> list = new ArrayList<>();
+        for (int i = 0; i < num; i++) {
+            int d = i % 30 == 0 ? 30 : i % 30;
+            String day = String.valueOf(d).length() == 1 ? "0" + d : String.valueOf(d);
+            int m = 1 + i / 30;
+            String month = String.valueOf(m).length() == 1 ? "0" + m : String.valueOf(m);
+            String date = day + "-" + month + "-" + "2022";
             int backGroundColor = Color.parseColor("#FFFFFF");
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
             list.add(new Note("Notes " + i, "This is note " + i, LocalDate.parse(date, dateTimeFormatter), backGroundColor));
-            System.out.println("LOCAL date = " + LocalDate.parse(date, dateTimeFormatter));
         }
-        if (list != null)  notes.setValue(list);
+        if (list != null) notes.setValue(list);
     }
 
 }

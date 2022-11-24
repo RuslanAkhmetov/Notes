@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/palette_button"
+        android:id="@+id/palette_action"
         android:title="@string/palette"
         android:icon="@drawable/baseline_palette_24" />
 
     <item
-        android:id="@+id/edit_button"
-        android:title="@string/EditToastText"
+        android:id="@+id/edit_action"
+        android:title="@string/edit_note"
         android:icon="@drawable/ic_baseline_edit_24" />
 
     <item
-        android:id="@+id/delete_button"
+        android:id="@+id/delete_action"
         android:title="@string/delete_note"
         android:icon="@drawable/ic_baseline_delete_24" />
 
     <item
-        android:id="@+id/button_back"
+        android:id="@+id/back_action"
         android:title="@string/back"
         android:icon="@drawable/ic_baseline_arrow_back_24" />
 

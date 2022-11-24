@@ -96,14 +96,14 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
-            android:id="@+id/palette_button"
+            android:id="@+id/palette_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:src="@drawable/baseline_palette_24" />
 
         <ImageButton
-            android:id="@+id/edit_button"
+            android:id="@+id/edit_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

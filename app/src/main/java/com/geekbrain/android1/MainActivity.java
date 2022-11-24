@@ -1,11 +1,16 @@
 package com.geekbrain.android1;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,12 +40,14 @@ public class MainActivity extends AppCompatActivity {
 //
     }
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         View list_layout = findViewById(R.id.nested_scroll_view);
         list_layout.setVisibility(View.VISIBLE);
     }
+
 
 
 }

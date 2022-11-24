@@ -11,17 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.UUID;
 
@@ -116,42 +113,23 @@ public class NoteBodyFragment extends Fragment {
 
         try {
             if (note != null) {
-//                Note note = model.getNote(uuidFragment);
                 model.setCurrentNote(note);
                 Log.i(TAG, "Fragment: " + note.getName());
                 view.setBackgroundColor(note.getBackColor());
                 TextView nameText = view.findViewById(R.id.note_name);
                 TextView bodyText = view.findViewById(R.id.note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
-                /*ImageButton paletteButton = view.findViewById(R.id.palette_button);
-                ImageButton editButton = view.findViewById(R.id.edit_button);
-                ImageButton backButton = view.findViewById(R.id.button_back);*/
+                BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
                 bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
                 dateText.setText(note.getNoteDate().toString());
+                bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
+                bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
 
-
-
-                /*paletteButton.setOnClickListener(view1 -> {
-                    showPalette();
-                    view1.invalidate();
-                });
-                editButton.setOnClickListener(v -> {
-                    Toast.makeText(requireActivity(), getString(R.string.EditToastText), Toast.LENGTH_SHORT).show();
-                });*/
-
-                if (!isLandscape()) {
-
-/*                 *backButton.setOnClickListener(v -> {
-                        requireActivity().onBackPressed();
-                    });*/
-                } else {
-                    /*backButton.setVisibility(View.GONE);*/
-                }
             } else {
-                Log.i(TAG, "Can't make  NoteBodyFragment");
+                Log.i(TAG, "Can't make NoteBodyFragment");
             }
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -160,9 +138,34 @@ public class NoteBodyFragment extends Fragment {
     }
 
 
+    public boolean onItemAction(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.palette_action:
+                Log.i(TAG, "onOptionsItemSelected: palette.");
+                showPalette();
+                break;
+            case R.id.edit_action:
+                Log.i(TAG, "onOptionsItemSelected: edit.");
+                Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            case R.id.delete_action:
+                Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            case R.id.back_action:
+                requireActivity().onBackPressed();
+                return true;
+            default:
+                return false;
+        }
+        return false;
+    }
+
     private void showPalette() {
         PaletteFragment paletteFragment = PaletteFragment.newInstance();
-        Log.i(TAG, "Button palette was clicked " + paletteFragment.toString());
+        Log.i(TAG, "Button palette was clicked " + paletteFragment);
         Log.i(TAG, "BackColor:" + note.getBackColor());
 
         requireActivity().getSupportFragmentManager()
@@ -175,14 +178,4 @@ public class NoteBodyFragment extends Fragment {
     private boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.bottom_navigation_menu, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-
-    }
-
 }

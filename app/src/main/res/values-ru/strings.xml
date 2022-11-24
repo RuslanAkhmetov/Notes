@@ -7,8 +7,9 @@
     <string name="note_date">Дата создания</string>
     <string name="note_body">Содержание</string>
     <string name="background_color">Цвет фона заметки</string>
-    <string name="EditToastText">Исправить заметку</string>
+    <string name="edit_note">Исправить заметку</string>
     <string name="palette">Цвета</string>
     <string name="delete_note">Удалить заметку</string>
     <string name="back">Назад</string>
+    <string name="about">О программе</string>
 </resources>
