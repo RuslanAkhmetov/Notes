@@ -22,12 +22,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
 
         if (savedInstanceState == null) {
-                    fragmentTransaction.add(R.id.fragment_container, notesFragment)
+                    fragmentTransaction
+                            .add(R.id.fragment_container, notesFragment)
                             .add(R.id.note_body_container, NoteBodyFragment.newInstance());
         } else {
             Log.i(TAG, "On Create");
-                    fragmentTransaction.replace(R.id.fragment_container, notesFragment)
-                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
+                    fragmentTransaction
+                            .add(R.id.fragment_container, notesFragment)
+                            .add(R.id.note_body_container, NoteBodyFragment.newInstance());
         }
         fragmentTransaction.commit();
 //

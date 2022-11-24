@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -121,29 +123,32 @@ public class NoteBodyFragment extends Fragment {
                 TextView nameText = view.findViewById(R.id.note_name);
                 TextView bodyText = view.findViewById(R.id.note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
-                ImageButton paletteButton = view.findViewById(R.id.palette_button);
+                /*ImageButton paletteButton = view.findViewById(R.id.palette_button);
                 ImageButton editButton = view.findViewById(R.id.edit_button);
-                ImageButton backButton = view.findViewById(R.id.button_back);
+                ImageButton backButton = view.findViewById(R.id.button_back);*/
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
                 bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
                 dateText.setText(note.getNoteDate().toString());
-                paletteButton.setOnClickListener(view1 -> {
+
+
+
+                /*paletteButton.setOnClickListener(view1 -> {
                     showPalette();
                     view1.invalidate();
                 });
                 editButton.setOnClickListener(v -> {
                     Toast.makeText(requireActivity(), getString(R.string.EditToastText), Toast.LENGTH_SHORT).show();
-                });
+                });*/
 
-                if(!isLandscape()) {
+                if (!isLandscape()) {
 
-                    backButton.setOnClickListener(v -> {
+/*                 *backButton.setOnClickListener(v -> {
                         requireActivity().onBackPressed();
-                    });
-                } else  {
-                    backButton.setVisibility(View.GONE);
+                    });*/
+                } else {
+                    /*backButton.setVisibility(View.GONE);*/
                 }
             } else {
                 Log.i(TAG, "Can't make  NoteBodyFragment");
@@ -153,6 +158,7 @@ public class NoteBodyFragment extends Fragment {
         }
 
     }
+
 
     private void showPalette() {
         PaletteFragment paletteFragment = PaletteFragment.newInstance();
@@ -166,8 +172,17 @@ public class NoteBodyFragment extends Fragment {
                 .commit();
     }
 
-    private boolean isLandscape(){
+    private boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.bottom_navigation_menu, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
 
 }

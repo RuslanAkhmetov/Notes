@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BigText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/note_name_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="MidText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/note_body_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>

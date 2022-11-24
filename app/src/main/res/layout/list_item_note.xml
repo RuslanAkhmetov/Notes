@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/note_name_text_size"
+        android:padding="5dp"
         android:textColor="@color/black"
         android:text="@string/note_name"/>
 

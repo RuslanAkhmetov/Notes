@@ -1,6 +1,8 @@
 package com.geekbrain.android1;
 
+import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
@@ -78,31 +81,66 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.fragment_notes, container, false);
+        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+//        if (savedInstanceState == null) {
+            LinearLayout viewGroup =  new LinearLayout(requireActivity().getApplicationContext());
+            viewGroup.setOrientation(LinearLayout.VERTICAL);
+            model.getNotes().observe(requireActivity(),
+                    notes -> layoutInit(viewGroup, notes));
+//        }
+        return viewGroup;
+//        return inflater.inflate(R.id.fragment_container, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        /*NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
         if (savedInstanceState == null) {
             model.getNotes().observe(requireActivity(),
                     notes -> fragmentInit((ViewGroup) view, notes));
+        }*/
+    }
+    private void layoutInit ( ViewGroup parent, List<Note> notes) {
+        Context context = requireActivity().getApplicationContext();
+
+        for (Note note : notes) {
+            LinearLayout layout = new LinearLayout(context);
+
+            TextView nName = new TextView(context);
+            TextView nDate = new TextView(context);
+            nName.setText(note.getName());
+            nDate.setText(note.getNoteDate().toString());
+            nName.setTextAppearance(R.style.BigText);
+            nDate.setTextAppearance(R.style.MidText);
+            nName.setBackgroundColor(note.getBackColor());
+            nDate.setBackgroundColor(note.getBackColor());
+            layout.addView(nName);
+            layout.addView(nDate);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setOnClickListener(v-> showNote(v, note));
+//            layout.setBackground(Drawable.createFromPath("@drawable/frame_border"));
+            layout.setBackgroundColor(note.getBackColor());
+            parent.addView(layout);
+//            Log.d(TAG, "Created " + note.getName());
         }
+
     }
 
     private void fragmentInit ( ViewGroup parent, List<Note> notes) {
         LayoutInflater layoutInflater = getLayoutInflater();
         for (Note note : notes) {
             View view = layoutInflater.inflate(R.layout.list_item_note, null,  false);
+
             TextView nName = view.findViewById(R.id.note_name);
             TextView nDate = view.findViewById(R.id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
+            nName.setBackgroundColor(note.getBackColor());
+            nDate.setBackgroundColor(note.getBackColor());
             view.setOnClickListener(v-> showNote(v, note));
-            //view.setBackground(Drawable.createFromPath("@drawable/frame_border"));
-            view.setBackgroundColor(note.getBackColor());
+//            view.setBackgroundColor(note.getBackColor());
+//            view.setBackground(Drawable.createFromPath("@drawable/frame_border"));
             parent.addView(view);
 //            Log.d(TAG, "Created " + note.getName());
         }
