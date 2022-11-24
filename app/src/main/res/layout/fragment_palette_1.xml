@@ -2,58 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout2"
+    android:id="@+id/palette_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
     tools:context=".PaletteFragment">
 
-    <TextView
-        android:id="@+id/note_name"
-        android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:text="@string/note_name"
-        android:textColor="@color/black"
-        android:textSize="@dimen/note_name_text_size"
-        app:layout_constraintEnd_toStartOf="@id/note_date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/note_date"
-        android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:text="@string/note_date"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/note_name"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/note_body"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/frame_border"
-        android:text="@string/note_body"
-        android:textColor="@color/black"
-        android:textSize="@dimen/note_body_text_size"
-        app:layout_constraintBottom_toTopOf="@id/palette_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/note_name" />
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/palette_container"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/note_body">
 
         <TextView
             android:id="@+id/palette_title"
@@ -62,11 +18,9 @@
             android:text="@string/background_color"
             android:textColor="@color/black"
             android:textSize="@dimen/note_body_text_size"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            tools:layout_conversion_absoluteHeight="22dp"
-            tools:layout_conversion_absoluteWidth="411dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageButton
             android:id="@+id/button_palette_purple"
@@ -74,6 +28,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_purple_custom"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_palette_teal"
             app:layout_constraintTop_toBottomOf="@id/palette_title" />
 
         <ImageButton
@@ -82,9 +37,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_teal_custom"
             app:layout_constraintStart_toEndOf="@id/button_palette_purple"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/palette_title"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -92,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/palette_container"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
