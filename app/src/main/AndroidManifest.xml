@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Notes"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="32">
         <meta-data
             android:name="com.google.android.actions"

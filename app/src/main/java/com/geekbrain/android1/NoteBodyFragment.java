@@ -123,7 +123,6 @@ public class NoteBodyFragment extends Fragment {
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
-                bodyText.setBackground(Drawable.createFromPath("@drawable/frame_border"));
                 dateText.setText(note.getNoteDate().toString());
                 bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
                 bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));

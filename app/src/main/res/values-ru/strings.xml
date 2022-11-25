@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Заметки</string>
+    <string name="app_name"></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note_name">Название</string>
@@ -12,4 +12,6 @@
     <string name="delete_note">Удалить заметку</string>
     <string name="back">Назад</string>
     <string name="about">О программе</string>
+    <string name="search_action">Искать в заметках</string>
+    <string name="cozy_view">Несколько столбцов</string>
 </resources>

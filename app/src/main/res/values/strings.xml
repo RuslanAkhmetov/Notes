@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notes</string>
+    <string name="app_name"></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note_name">Note name</string>
@@ -11,4 +11,6 @@
     <string name="delete_note">Delete current Note</string>
     <string name="back">Back</string>
     <string name="about">About</string>
+    <string name="search_action">Search</string>
+    <string name="cozy_view">Cozy view</string>
 </resources>
