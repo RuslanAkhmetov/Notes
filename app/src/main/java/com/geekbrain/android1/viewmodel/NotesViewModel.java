@@ -1,7 +1,10 @@
 package com.geekbrain.android1.viewmodel;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class NotesViewModel extends ViewModel {
+public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     private MutableLiveData<List<Note>> notes;
 
     public Note getCurrentNote() {
@@ -81,4 +84,27 @@ public class NotesViewModel extends ViewModel {
         if (list != null) notes.setValue(list);
     }
 
+    @Override
+    public int deleteNote(Note note) {                             //return index of current note after delete or -1 if delete is impossible
+        try{
+        List<Note> list = notes.getValue();
+        if (list.size()==1)
+            return -1;
+        if (note != null) {
+            int removeIndex = list.indexOf(note);
+            if (removeIndex == list.size()-1) {
+                notes.getValue().remove(note);
+                setCurrentNote(list.get(list.size()-1));
+                return list.size()-1;
+            } else {
+                notes.getValue().remove(note);
+                setCurrentNote(list.get(removeIndex));
+                return removeIndex;
+            }
+        }
+        } catch (Exception e){
+            Log.i(TAG, "deleteNote: impossible");
+        }
+        return -1;
+    }
 }

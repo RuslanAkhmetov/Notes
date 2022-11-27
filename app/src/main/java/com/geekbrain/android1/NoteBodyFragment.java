@@ -1,7 +1,6 @@
 package com.geekbrain.android1;
 
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -99,6 +98,21 @@ public class NoteBodyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initBodyFragment(view);
+        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
+        bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
+        bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
+
+    }
+
+    public void initBodyFragment() {
+        View view = requireActivity().findViewById(R.id.note_body_container_1);
+//       ((ViewGroup) view).removeAllViews();
+        initBodyFragment(view);
+    }
+
+    private void initBodyFragment(@NonNull View view) {
+//        ((ViewGroup) view).removeAllViews();
         Bundle arguments = getArguments();
         if (arguments != null) {
             note = arguments.getParcelable(NOTE);
@@ -115,27 +129,22 @@ public class NoteBodyFragment extends Fragment {
             if (note != null) {
                 model.setCurrentNote(note);
                 Log.i(TAG, "Fragment: " + note.getName());
+
                 view.setBackgroundColor(note.getBackColor());
                 TextView nameText = view.findViewById(R.id.note_name);
                 TextView bodyText = view.findViewById(R.id.note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
-                BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
                 dateText.setText(note.getNoteDate().toString());
-                bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
-                bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
-
             } else {
                 Log.i(TAG, "Can't make NoteBodyFragment");
             }
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
-
     }
-
 
     public boolean onItemAction(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -150,10 +159,20 @@ public class NoteBodyFragment extends Fragment {
                         .show();
                 return true;
             case R.id.delete_action:
-                Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT)
-                        .show();
-                return true;
+                //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
+                NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+                if (model.deleteNote(model.getCurrentNote())>=0) {
+                    NotesFragment notesFragment = new NotesFragment();
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, notesFragment)
+                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
+                            .commit();
+                    return true;
+                }
+                return false;
             case R.id.back_action:
+                //updateNotesListData();
                 requireActivity().onBackPressed();
                 return true;
             default:
@@ -172,6 +191,14 @@ public class NoteBodyFragment extends Fragment {
                 .add(R.id.note_body_container, paletteFragment)
                 .addToBackStack("")
                 .commit();
+    }
+
+    private void updateNotesListData() {
+        for (Fragment fragment : requireActivity().getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof NotesFragment) {
+                ((NotesFragment) fragment).fragmentInit();
+            }
+        }
     }
 
     private boolean isLandscape() {

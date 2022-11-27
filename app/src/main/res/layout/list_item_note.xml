@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/layout_margin"
-    android:background="@drawable/frame_border"
+
     android:orientation="vertical">
+
+<!--    android:background="@drawable/frame_border"-->
 
     <TextView
         android:id="@+id/note_name"

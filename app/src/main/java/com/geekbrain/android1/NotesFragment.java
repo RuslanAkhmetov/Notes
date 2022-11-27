@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +40,6 @@ import java.util.List;
 
 public class NotesFragment extends Fragment {
     private final String TAG = "Notes_Fragment";
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -136,7 +136,7 @@ public class NotesFragment extends Fragment {
             nDate.setText(note.getNoteDate().toString());
             nName.setTextAppearance(style.BigText);
             nDate.setTextAppearance(style.MidText);
-            nName.setBackgroundColor(note.getBackColor());
+//            nName.setBackgroundColor(note.getBackColor());
 //            nDate.setBackgroundColor(note.getBackColor());
             layout.addView(nName);
             layout.addView(nDate);
@@ -152,18 +152,28 @@ public class NotesFragment extends Fragment {
 
     private void fragmentInit(ViewGroup parent, List<Note> notes) {
         LayoutInflater layoutInflater = getLayoutInflater();
+        parent.removeAllViews();
         for (Note note : notes) {
             View view = layoutInflater.inflate(layout.list_item_note, null, false);
-//            view.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
+            if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
+                Log.i(TAG, "fragmentInit: note.getBackColor()");
+                view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_teal));
+            } else if  (note.getBackColor() == getResources().getColor(color.purple_200, null)) {
+                view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_purple));
+            } else {
+                view.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
+            }
 
-            view.setBackgroundResource(drawable.frame_border);
+
+//            view.setBackgroundResource(drawable.frame_border);
             TextView nName = view.findViewById(id.note_name);
             TextView nDate = view.findViewById(id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-            nName.setBackgroundColor(note.getBackColor());
-            nDate.setBackgroundColor(note.getBackColor());
-//            nName.setBackground(Drawable.createFromPath("@drawable.frame_border"));
+//            nName.setBackgroundColor(note.getBackColor());
+//            nDate.setBackgroundColor(note.getBackColor());
+
+
             view.setOnClickListener(v -> showNote(v, note));
 //            view.setBackgroundColor(note.getBackColor());
             parent.addView(view);
@@ -205,4 +215,9 @@ public class NotesFragment extends Fragment {
                 .commit();
     }
 
+    public void fragmentInit() {
+        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        model.getNotes().observe(requireActivity(),
+                    notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
+    }
 }

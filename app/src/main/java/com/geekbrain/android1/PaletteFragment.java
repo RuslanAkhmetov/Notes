@@ -109,9 +109,27 @@ public class PaletteFragment extends Fragment {
                 setNoteBackColor(v, color, note);
         });
 
-        backButton.setOnClickListener(v->
-                requireActivity().getSupportFragmentManager().popBackStackImmediate());
+        backButton.setOnClickListener(v->{
+               // updateNoteData();
+            NotesFragment notesFragment = new NotesFragment();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.note_body_container, NoteBodyFragment.newInstance(note))
+                        .commit();// .popBackStackImmediate();
+
+        });
     }
+
+    private void updateNoteData() {
+        for (Fragment fragment: requireActivity().getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof NoteBodyFragment){
+                ((NoteBodyFragment) fragment).initBodyFragment();
+                break;
+            }
+        }
+    }
+
 
     private void setNoteBackColor(View v, int color, Note note) {
         Log.i(TAG, "BackColor  required:" + color );
