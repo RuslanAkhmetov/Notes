@@ -17,4 +17,13 @@
     <string name="unsuccess_save">Не удалось сохранить!</string>
     <string name="success_save">Запись сохранена</string>
     <string name="save_note">Сохранить</string>
+    <string name="notes_drawer_action">Заметки</string>
+    <string name="notification_drawer_action">Напоминания</string>
+    <string name="archive_drawer_action">Архив</string>
+    <string name="basket_drawer_action">Корзина</string>
+    <string name="settings_drawer_action">Настройки</string>
+    <string name="help_feedback">Справка/отзыв</string>
+    <string name="keep">Keep</string>
+    <string name="navigation_drawer_one">Открытие бокового меню</string>
+    <string name="navigation_drawer_close">Закрытие бокового меню</string>
 </resources>

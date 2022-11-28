@@ -6,4 +6,6 @@
     <dimen name="name_padding">16dp</dimen>
     <dimen name="layout_margin">4dp</dimen>
     <dimen name="minimum_margin_for_frame">4dp</dimen>
+    <dimen name="drawer_height">120dp</dimen>
+    <dimen name="very_big_text">36sp</dimen>
 </resources>

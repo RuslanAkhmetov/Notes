@@ -16,4 +16,13 @@
     <string name="save_note">Save</string>
     <string name="unsuccess_save">Save is not success!</string>
     <string name="success_save">Note saved</string>
+    <string name="notes_drawer_action">Notes</string>
+    <string name="notification_drawer_action">Notification</string>
+    <string name="archive_drawer_action">Archive</string>
+    <string name="basket_drawer_action">Basket</string>
+    <string name="settings_drawer_action">Settings</string>
+    <string name="help_feedback">Help/feedback</string>
+    <string name="keep">Keep</string>
+    <string name="navigation_drawer_one">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
