@@ -4,8 +4,6 @@ import static com.geekbrain.android1.R.*;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
@@ -119,7 +115,7 @@ public class NotesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
         if (savedInstanceState == null) {
-            model.getNotes().observe(requireActivity(),
+            model.initNotes().observe(requireActivity(),
                     notes -> fragmentInit((ViewGroup) view, notes));
         }
     }
@@ -166,7 +162,7 @@ public class NotesFragment extends Fragment {
 
 
 //            view.setBackgroundResource(drawable.frame_border);
-            TextView nName = view.findViewById(id.note_name);
+            TextView nName = view.findViewById(id.edit_note_name);
             TextView nDate = view.findViewById(id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
@@ -217,7 +213,7 @@ public class NotesFragment extends Fragment {
 
     public void fragmentInit() {
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-        model.getNotes().observe(requireActivity(),
+        model.initNotes().observe(requireActivity(),
                     notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
     }
 }

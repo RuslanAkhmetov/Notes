@@ -131,8 +131,8 @@ public class NoteBodyFragment extends Fragment {
                 Log.i(TAG, "Fragment: " + note.getName());
 
                 view.setBackgroundColor(note.getBackColor());
-                TextView nameText = view.findViewById(R.id.note_name);
-                TextView bodyText = view.findViewById(R.id.note_body);
+                TextView nameText = view.findViewById(R.id.edit_note_name);
+                TextView bodyText = view.findViewById(R.id.edit_note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
 
                 nameText.setText(note.getName());
@@ -157,6 +157,11 @@ public class NoteBodyFragment extends Fragment {
                 Log.i(TAG, "onOptionsItemSelected: edit.");
                 Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
                         .show();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(note.copy()))
+                        .commit();
+
                 return true;
             case R.id.delete_action:
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();

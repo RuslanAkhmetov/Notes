@@ -2,7 +2,6 @@ package com.geekbrain.android1.viewmodel;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -11,17 +10,19 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.geekbrain.android1.Note;
-import com.geekbrain.android1.R;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class NotesViewModel extends ViewModel implements ListNoteViewModel {
+    private static String TAG = "ViewModel";
+
     private MutableLiveData<List<Note>> notes;
+
+    private List<Note> noteList;
 
     public Note getCurrentNote() {
         return currentNote;
@@ -33,7 +34,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     private Note currentNote;
 
-    public LiveData<List<Note>> getNotes() {
+    public LiveData<List<Note>> initNotes() {
         if (notes == null) {
             notes = new MutableLiveData<>();
             init(20);
@@ -64,10 +65,6 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
         return currentNote;
     }
 
-    public Note remove (Note note){
-        notes.getValue().remove(note);
-        return getFirst();
-    }
 
     private void init(int num) {
         List<Note> list = new ArrayList<>();
@@ -106,5 +103,20 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             Log.i(TAG, "deleteNote: impossible");
         }
         return -1;
+    }
+
+    @Override
+    public int editCurrentNote(Note note) {
+        try {
+            currentNote.setName(note.getName());
+            currentNote.setBody(note.getBody());
+            currentNote.setBackColor(note.getBackColor());
+            currentNote.setNoteDate(LocalDate.now());
+            Log.i(TAG, "editCurrentNote: " + LocalDate.now());
+            return notes.getValue().indexOf(currentNote);
+        } catch (Exception e){
+            Log.i(TAG, "editCurrentNote: " + e.getMessage());
+            return -1;
+        }
     }
 }

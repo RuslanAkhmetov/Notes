@@ -29,16 +29,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
 
-        if (savedInstanceState == null) {
+/*        if (savedInstanceState == null) {
                     fragmentTransaction
                             .add(R.id.fragment_container, notesFragment)
                             .add(R.id.note_body_container, NoteBodyFragment.newInstance());
         } else {
-            Log.i(TAG, "On Create");
+            Log.i(TAG, "On Create");*/
                     fragmentTransaction
                             .add(R.id.fragment_container, notesFragment)
                             .add(R.id.note_body_container, NoteBodyFragment.newInstance());
-        }
+//        }
         fragmentTransaction.commit();
 //
     }

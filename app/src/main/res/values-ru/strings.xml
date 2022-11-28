@@ -14,4 +14,7 @@
     <string name="about">О программе</string>
     <string name="search_action">Искать в заметках</string>
     <string name="cozy_view">Несколько столбцов</string>
+    <string name="unsuccess_save">Не удалось сохранить!</string>
+    <string name="success_save">Запись сохранена</string>
+    <string name="save_note">Сохранить</string>
 </resources>

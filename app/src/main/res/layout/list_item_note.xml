@@ -10,7 +10,7 @@
 <!--    android:background="@drawable/frame_border"-->
 
     <TextView
-        android:id="@+id/note_name"
+        android:id="@+id/edit_note_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/note_name_text_size"

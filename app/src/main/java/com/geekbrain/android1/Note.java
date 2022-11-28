@@ -83,6 +83,10 @@ public class Note implements Parcelable {
         backColor = parcel.readInt();
     }
 
+    public Note copy(){
+        return new Note(name, body, noteDate, backColor);
+    }
+
     public static final Creator <Note> CREATOR  = new Creator<Note>() {
         @Override
         public Note createFromParcel(Parcel parcel) {
