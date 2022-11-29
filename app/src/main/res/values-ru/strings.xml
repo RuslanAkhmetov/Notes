@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name"></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="note_name">Название</string>
+    <string name="note_date">Дата создания</string>
+    <string name="note_body">Содержание</string>
+    <string name="background_color">Цвет фона заметки</string>
+    <string name="edit_note">Исправить заметку</string>
+    <string name="palette">Цвета</string>
+    <string name="delete_note">Удалить заметку</string>
+    <string name="back">Назад</string>
+    <string name="about">О программе</string>
+    <string name="search_action">Искать в заметках</string>
+    <string name="cozy_view">Несколько столбцов</string>
+    <string name="unsuccess_save">Не удалось сохранить!</string>
+    <string name="success_save">Запись сохранена</string>
+    <string name="save_note">Сохранить</string>
+    <string name="notes_drawer_action">Заметки</string>
+    <string name="notification_drawer_action">Напоминания</string>
+    <string name="archive_drawer_action">Архив</string>
+    <string name="basket_drawer_action">Корзина</string>
+    <string name="settings_drawer_action">Настройки</string>
+    <string name="help_feedback">Справка/отзыв</string>
+    <string name="keep">Keep</string>
+    <string name="navigation_drawer_one">Открытие бокового меню</string>
+    <string name="navigation_drawer_close">Закрытие бокового меню</string>
+    <string name="toast_notification">Напоминания должны быть здесь</string>
+    <string name="display_options">Параметры отображения</string>
+    <string name="add_new_notes_to_end">Добавить новые пункты в конец</string>
+    <string name="move_marked_items_to_the_end">Перемещать отмеченные пункты в конец</string>
+    <string name="add_new_note">Добавить заметку</string>
+    <string name="success_add">Note add</string>
+    <string name="user_avatar">User Avatar</string>
+</resources>

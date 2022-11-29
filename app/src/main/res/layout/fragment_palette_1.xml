@@ -54,7 +54,7 @@
 
 
         <ImageButton
-            android:id="@+id/button_back"
+            android:id="@+id/back_action"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_baseline_arrow_back_24"
