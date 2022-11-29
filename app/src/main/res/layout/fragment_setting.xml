@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_new_notes_to_end"
-        android:textSize="@dimen/note_name_text_size"
+        android:textSize="@dimen/note_body_text_size"
         app:layout_constraintTop_toBottomOf="@id/separator"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/move_marked_items_to_the_end"
-        android:textSize="@dimen/note_name_text_size"
+        android:textSize="@dimen/note_body_text_size"
         app:layout_constraintTop_toBottomOf="@id/add_notes_to_end"
         app:layout_constraintStart_toStartOf="parent"/>
 

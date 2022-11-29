@@ -26,15 +26,16 @@
         android:id="@+id/edit_note_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="@string/note_body"
-        android:textSize="@dimen/note_body_text_size"
+        android:background="@drawable/frame_border"
+        android:gravity="start"
         android:padding="@dimen/body_padding"
+        android:text="@string/note_body"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/edit_note_name"
+        android:textSize="@dimen/note_body_text_size"
+        app:layout_constraintBottom_toTopOf="@id/palette_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/palette_container"
-        android:background="@drawable/frame_border" />
+        app:layout_constraintTop_toBottomOf="@id/edit_note_name" />
 
     <LinearLayout
         android:id="@+id/palette_container"
