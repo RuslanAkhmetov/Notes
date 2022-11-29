@@ -1,5 +1,6 @@
 package com.geekbrain.android1;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,6 +9,14 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Note implements Parcelable {
+    public Note() {
+        this.uuid = UUID.randomUUID();
+        this.name = "";
+        this.body = "";
+        this.noteDate = LocalDate.now();
+        this.backColor = Color.parseColor("#FFFFFF");
+    }
+
     public String getName() {
         return name;
     }

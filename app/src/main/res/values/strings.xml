@@ -25,4 +25,11 @@
     <string name="keep">Keep</string>
     <string name="navigation_drawer_one">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="toast_notification">Notification should here</string>
+    <string name="display_options">Display options</string>
+    <string name="add_new_notes_to_end">Add new notes to end</string>
+    <string name="move_marked_items_to_the_end">Move marked items to the end</string>
+    <string name="add_new_note">Add new note</string>
+    <string name="success_add">Note add</string>
+    <string name="user_avatar">User Avatar</string>
 </resources>

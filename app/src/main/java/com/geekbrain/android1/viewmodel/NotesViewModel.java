@@ -18,7 +18,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class NotesViewModel extends ViewModel implements ListNoteViewModel {
-    private static String TAG = "ViewModel";
+    private static final String TAG = "ViewModel";
+
+    private boolean addNewToTheEnd = true;
+
+    public boolean isAddNewToTheEnd() {
+        return addNewToTheEnd;
+    }
+
+    public void setAddNewToTheEnd(boolean addNewToTheEnd) {
+        this.addNewToTheEnd = addNewToTheEnd;
+    }
 
     private MutableLiveData<List<Note>> notes;
 
@@ -78,7 +88,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
             list.add(new Note("Notes " + i, "This is note " + i, LocalDate.parse(date, dateTimeFormatter), backGroundColor));
         }
-        if (list != null) notes.setValue(list);
+        notes.setValue(list);
     }
 
     @Override
@@ -116,6 +126,22 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             return notes.getValue().indexOf(currentNote);
         } catch (Exception e){
             Log.i(TAG, "editCurrentNote: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    @Override
+    public int addNote(Note note) {
+        try {
+            if (addNewToTheEnd) {
+                notes.getValue().add(note);
+            } else {
+                notes.getValue().add(0, note);
+            }
+            currentNote = note;
+            return notes.getValue().indexOf(currentNote);
+        } catch (Exception e){
+            Log.i(TAG, "addNote: " + e.getMessage());
             return -1;
         }
     }

@@ -9,9 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -31,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
         NotesFragment notesFragment = new NotesFragment();
         setSupportActionBar(findViewById(R.id.toolbar));
+
+        initToolBarDrawer();
+
         FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
 
 /*        if (savedInstanceState == null) {
@@ -75,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
         //return super.onOptionsItemSelected(item);
     }
 
+    private void initToolBarDrawer(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        initDrawer(toolbar);
+    }
+
     private void initDrawer(Toolbar toolbar){
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -88,19 +95,35 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id){
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            switch (id){
+                case R.id.drawer_notes:
 
-                    default:
-                        return false;
-                }
-
+                case R.id.drawer_notification:
+                    drawerLayout.close();
+                    return true;
+                case R.id.drawer_SETTINGS:
+                    openSettingFragment();
+                    drawerLayout.close();
+                    return true;
+                default:
+                    return false;
             }
+
         });
 
     }
+
+
+
+    private void openSettingFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack("")
+                .add(R.id.fragment_container, new SettingFragment())
+                .commit();
+    }
+
 
 }

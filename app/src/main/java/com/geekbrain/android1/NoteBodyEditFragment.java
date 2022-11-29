@@ -36,7 +36,7 @@ public class NoteBodyEditFragment extends Fragment {
     private static final String NOTE = "Note_Body_Edit_Mote";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private boolean addNew;
     private String mParam2;
     private Note note;
 
@@ -54,19 +54,20 @@ public class NoteBodyEditFragment extends Fragment {
      * @return A new instance of fragment NoteBodyEditFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NoteBodyEditFragment newInstance(String param1, String param2, Note note) {
+    public static NoteBodyEditFragment newInstance(boolean param1, String param2, Note note) {
         NoteBodyEditFragment fragment = new NoteBodyEditFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putBoolean(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         args.putParcelable(NOTE, note);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static NoteBodyEditFragment newInstance(Note note) {
+    public static NoteBodyEditFragment newInstance(boolean addNote, Note note) {
         NoteBodyEditFragment fragment = new NoteBodyEditFragment();
         Bundle args = new Bundle();
+        args.putBoolean(ARG_PARAM1, addNote);
         args.putParcelable(NOTE, note);
         fragment.setArguments(args);
         return fragment;
@@ -76,7 +77,7 @@ public class NoteBodyEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            addNew = getArguments().getBoolean(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             note = getArguments().getParcelable(NOTE);
         }
@@ -109,7 +110,7 @@ public class NoteBodyEditFragment extends Fragment {
 
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
 
-        if (note == null) {
+        if (note == null && !addNew) {
             note =  model.getCurrentNote().copy();
         }
 
@@ -179,11 +180,14 @@ public class NoteBodyEditFragment extends Fragment {
         switch (id) {
             case R.id.save_action:
                 Log.i(TAG, "onItemAction: ");
-
-                if (model.editCurrentNote(note) < 0) {
-                    Toast.makeText(requireActivity(),getString(R.string.unsuccess_save), Toast.LENGTH_SHORT).show();
-                } else {
+                if(addNew){
+                   if(model.addNote(note) > 0){
+                       Toast.makeText(requireActivity(),getString(R.string.success_add), Toast.LENGTH_SHORT).show();
+                   }
+                } else if (model.editCurrentNote(note) >= 0) {
                     Toast.makeText(requireActivity(),getString(R.string.success_save), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireActivity(),getString(R.string.unsuccess_save), Toast.LENGTH_SHORT).show();
                 }
                 break;
 

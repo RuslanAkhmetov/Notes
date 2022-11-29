@@ -26,4 +26,11 @@
     <string name="keep">Keep</string>
     <string name="navigation_drawer_one">Открытие бокового меню</string>
     <string name="navigation_drawer_close">Закрытие бокового меню</string>
+    <string name="toast_notification">Напоминания должны быть здесь</string>
+    <string name="display_options">Параметры отображения</string>
+    <string name="add_new_notes_to_end">Добавить новые пункты в конец</string>
+    <string name="move_marked_items_to_the_end">Перемещать отмеченные пункты в конец</string>
+    <string name="add_new_note">Добавить заметку</string>
+    <string name="success_add">Note add</string>
+    <string name="user_avatar">User Avatar</string>
 </resources>

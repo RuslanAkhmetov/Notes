@@ -149,17 +149,20 @@ public class NoteBodyFragment extends Fragment {
     public boolean onItemAction(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.palette_action:
+            case R.id.add_action:
                 Log.i(TAG, "onOptionsItemSelected: palette.");
-                showPalette();
-                break;
+               requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(true, new Note()))
+                    .commit();
+                return true;
             case R.id.edit_action:
                 Log.i(TAG, "onOptionsItemSelected: edit.");
                 Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
                         .show();
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(note.copy()))
+                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(false, note.copy()))
                         .commit();
 
                 return true;
@@ -183,7 +186,7 @@ public class NoteBodyFragment extends Fragment {
             default:
                 return false;
         }
-        return false;
+//        return false;
     }
 
     private void showPalette() {
