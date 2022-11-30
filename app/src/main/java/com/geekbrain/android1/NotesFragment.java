@@ -194,8 +194,8 @@ public class NotesFragment extends Fragment {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .add(id.note_body_container, noteBodyFragment)
-                .addToBackStack("")
+                .replace(id.note_body_container, noteBodyFragment)
+//                .addToBackStack("")
                 .commit();
     }
 
@@ -205,8 +205,8 @@ public class NotesFragment extends Fragment {
         list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .add(id.note_body_container, noteBodyFragment)
-                .addToBackStack("")
+                .replace(id.note_body_container, noteBodyFragment)
+//                .addToBackStack("")
 //                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }

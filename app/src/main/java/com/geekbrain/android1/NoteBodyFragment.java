@@ -1,5 +1,6 @@
 package com.geekbrain.android1;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.UUID;
 
@@ -170,25 +172,47 @@ public class NoteBodyFragment extends Fragment {
             case R.id.delete_action:
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
                 NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-                if (model.deleteNote(model.getCurrentNote()) >= 0) {
-                    NotesFragment notesFragment = new NotesFragment();
-                    requireActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, notesFragment)
-                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
-                            .commit();
-                    return true;
+                boolean isDelete = true;
+                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
+                        , String.format(getString(R.string.delete_confirmation), model.getCurrentNote().getName())
+                        , Snackbar.LENGTH_LONG);
+                confirmDeleteNote.setAction(R.string.Undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean isDelete = false;
+                    }
+                });
+                confirmDeleteNote.show();
+                if (isDelete) {
+                    if (model.deleteNote(model.getCurrentNote()) >= 0) {
+                        NotesFragment notesFragment = new NotesFragment();
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, notesFragment)
+                                .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
+                                .commit();
+                    }
                 }
-                return false;
+                return true;
             case R.id.back_action:
-                //updateNotesListData();
-                requireActivity().onBackPressed();
+
+                View list_layout = requireActivity().findViewById(R.id.nested_scroll_view);
+                list_layout.setVisibility(View.VISIBLE);
+                NotesFragment notesFragment = new NotesFragment();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.note_body_container, NoteBodyFragment.newInstance())
+                        .commit();
+
                 return true;
             default:
                 return false;
         }
 //        return false;
     }
+
+
 
     private void showPalette() {
         PaletteFragment paletteFragment = PaletteFragment.newInstance();
@@ -213,4 +237,6 @@ public class NoteBodyFragment extends Fragment {
     private boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
+
+
 }
