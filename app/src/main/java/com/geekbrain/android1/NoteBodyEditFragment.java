@@ -127,11 +127,15 @@ public class NoteBodyEditFragment extends Fragment {
                 buttonTeal.setOnClickListener(v ->{
                     int color = getResources().getColor(R.color.teal_700, null);
                     note.setBackColor(color);
+//                    initBodyEditFragment(requireActivity().findViewById(R.id.note_body_edit_container));
                 });
 
                 buttonPurple.setOnClickListener(v ->{
                     int color = getResources().getColor(R.color.purple_200, null);
-                    note.setBackColor(color);;
+                    note.setBackColor(color);
+                    requireActivity().findViewById(R.id.note_body_edit_container)
+                            .setBackgroundColor(note.getBackColor());
+//                    initBodyEditFragment(requireActivity().findViewById(R.id.note_body_edit_container));
                 });
 
                 nameEditText.setText(note.getName());

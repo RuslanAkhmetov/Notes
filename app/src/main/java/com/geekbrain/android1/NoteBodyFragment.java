@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -83,6 +84,7 @@ public class NoteBodyFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             uuidFragment = (UUID) getArguments().getSerializable(NOTE_UUID);
+            note = getArguments().<Note>getParcelable(NOTE);
         }
     }
 
@@ -106,13 +108,11 @@ public class NoteBodyFragment extends Fragment {
     }
 
     public void initBodyFragment() {
-        View view = requireActivity().findViewById(R.id.note_body_container_1);
-//       ((ViewGroup) view).removeAllViews();
+        View view = requireActivity().findViewById(R.id.note_body_edit_container);
         initBodyFragment(view);
     }
 
     private void initBodyFragment(@NonNull View view) {
-//        ((ViewGroup) view).removeAllViews();
         Bundle arguments = getArguments();
         if (arguments != null) {
             note = arguments.getParcelable(NOTE);
