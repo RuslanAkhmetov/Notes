@@ -16,7 +16,6 @@
         android:text="@string/note_name"
         android:padding="@dimen/name_padding"
         android:textSize="@dimen/note_name_text_size"
-        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -30,7 +29,6 @@
         android:gravity="start"
         android:padding="@dimen/body_padding"
         android:text="@string/note_body"
-        android:textColor="@color/black"
         android:textSize="@dimen/note_body_text_size"
         app:layout_constraintBottom_toTopOf="@id/palette_container"
         app:layout_constraintEnd_toEndOf="parent"

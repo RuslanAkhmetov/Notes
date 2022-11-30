@@ -16,7 +16,6 @@
         android:text="@string/note_name"
         android:padding="@dimen/name_padding"
         android:textSize="@dimen/note_name_text_size"
-        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/note_date"/>
@@ -25,7 +24,6 @@
         android:id="@+id/note_date"
         android:layout_width="0px"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:text="@string/note_date"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +36,6 @@
         android:text="@string/note_body"
         android:textSize="@dimen/note_body_text_size"
         android:padding="@dimen/body_padding"
-        android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/edit_note_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

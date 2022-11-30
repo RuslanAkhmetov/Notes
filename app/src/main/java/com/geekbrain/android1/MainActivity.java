@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack("")
-                .add(R.id.fragment_container, new SettingFragment())
+                .add(R.id.fragment_container, new SettingFragment(), "Setting")
                 .commit();
     }
 

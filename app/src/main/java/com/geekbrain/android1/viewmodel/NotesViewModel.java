@@ -84,7 +84,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             int m = 1 + i / 30;
             String month = String.valueOf(m).length() == 1 ? "0" + m : String.valueOf(m);
             String date = day + "-" + month + "-" + "2022";
-            int backGroundColor = Color.parseColor("#FFFFFF");
+            int backGroundColor = 0; //Color.parseColor("#FFFFFF");
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
             list.add(new Note("Notes " + i, "This is note " + i, LocalDate.parse(date, dateTimeFormatter), backGroundColor));
         }

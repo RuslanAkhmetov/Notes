@@ -129,8 +129,9 @@ public class NoteBodyFragment extends Fragment {
             if (note != null) {
                 model.setCurrentNote(note);
                 Log.i(TAG, "Fragment: " + note.getName());
-
-                view.setBackgroundColor(note.getBackColor());
+                if (note.getBackColor() != 0) {
+                    view.setBackgroundColor(note.getBackColor());
+                }
                 TextView nameText = view.findViewById(R.id.edit_note_name);
                 TextView bodyText = view.findViewById(R.id.edit_note_body);
                 TextView dateText = view.findViewById(R.id.note_date);
@@ -151,10 +152,10 @@ public class NoteBodyFragment extends Fragment {
         switch (id) {
             case R.id.add_action:
                 Log.i(TAG, "onOptionsItemSelected: palette.");
-               requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(true, new Note()))
-                    .commit();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(true, new Note()))
+                        .commit();
                 return true;
             case R.id.edit_action:
                 Log.i(TAG, "onOptionsItemSelected: edit.");
@@ -169,7 +170,7 @@ public class NoteBodyFragment extends Fragment {
             case R.id.delete_action:
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
                 NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-                if (model.deleteNote(model.getCurrentNote())>=0) {
+                if (model.deleteNote(model.getCurrentNote()) >= 0) {
                     NotesFragment notesFragment = new NotesFragment();
                     requireActivity().getSupportFragmentManager()
                             .beginTransaction()

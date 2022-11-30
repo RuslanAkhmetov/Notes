@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
@@ -82,7 +85,16 @@ public class SettingFragment extends Fragment {
     private void initSettingFragment(View view) {
         NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
         SwitchCompat addNoteSwitch = view.findViewById(R.id.add_note_switch);
+        ImageButton backButton = view.findViewById(R.id.back_action);
         addNoteSwitch.setChecked(model.isAddNewToTheEnd());
+
+        backButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(this)
+                    .commit();
+        });
+
         addNoteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
