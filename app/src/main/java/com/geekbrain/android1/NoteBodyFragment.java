@@ -1,5 +1,7 @@
 package com.geekbrain.android1;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -179,16 +181,29 @@ public class NoteBodyFragment extends Fragment {
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
                 NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
                 boolean isDelete = true;
-                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
-                        , String.format(getString(R.string.delete_confirmation), model.getCurrentNote().getName())
-                        , Snackbar.LENGTH_LONG);
-                confirmDeleteNote.setAction(R.string.Undo, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        boolean isDelete = false;
-                    }
-                });
-                confirmDeleteNote.show();
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.atention)
+                        .setMessage(R.string.are_you_sure)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
+                                        , String.format(getString(R.string.delete_confirmation), model.getCurrentNote().getName())
+                                        , Snackbar.LENGTH_LONG);
+                                confirmDeleteNote.setAction(R.string.Undo, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        boolean isDelete = false;
+                                    }
+                                });
+                                confirmDeleteNote.show();
+                                //isDelete = true;
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+
                 if (isDelete) {
                     if (model.deleteNote(model.getCurrentNote()) >= 0) {
                         NotesFragment notesFragment = new NotesFragment();
@@ -200,6 +215,7 @@ public class NoteBodyFragment extends Fragment {
                     }
                 }
                 return true;
+
             case R.id.back_action:
 
                 View list_layout = requireActivity().findViewById(R.id.nested_scroll_view);

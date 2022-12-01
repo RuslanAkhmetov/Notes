@@ -35,4 +35,8 @@
     <string name="user_avatar">User Avatar</string>
     <string name="delete_confirmation">Текущая запись %s удалена!</string>
     <string name="Undo">Отмена</string>
+    <string name="atention">Attention</string>
+    <string name="are_you_sure">Are you really would like delete the Note</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Да</string>
 </resources>
