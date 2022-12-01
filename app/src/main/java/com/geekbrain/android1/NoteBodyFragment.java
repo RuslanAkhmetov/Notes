@@ -1,15 +1,14 @@
 package com.geekbrain.android1;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -140,6 +139,13 @@ public class NoteBodyFragment extends Fragment {
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
+                if (note.getBackColor() == 0){
+                    bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
+                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null))  {
+                    bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_teal_700));
+                } else if (note.getBackColor() == getResources().getColor(R.color.purple_200, null)) {
+                    bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
+                }
                 dateText.setText(note.getNoteDate().toString());
             } else {
                 Log.i(TAG, "Can't make NoteBodyFragment");

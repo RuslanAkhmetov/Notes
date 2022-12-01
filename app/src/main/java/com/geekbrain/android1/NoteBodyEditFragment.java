@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -121,6 +122,13 @@ public class NoteBodyEditFragment extends Fragment {
                 }
                 EditText nameEditText = view.findViewById(R.id.edit_note_name);
                 EditText bodyEditText = view.findViewById(R.id.edit_note_body);
+                if (note.getBackColor() == 0){
+                    bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
+                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null))  {
+                    bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_teal_700));
+                } else if (note.getBackColor() == getResources().getColor(R.color.purple_200, null)) {
+                    bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
+                }
                 ImageButton buttonPurple = view.findViewById(R.id.button_palette_purple);
                 ImageButton buttonTeal = view.findViewById(R.id.button_palette_teal);
 
@@ -129,6 +137,7 @@ public class NoteBodyEditFragment extends Fragment {
                     note.setBackColor(color);
                     requireActivity().findViewById(R.id.note_body_edit_container)
                             .setBackgroundColor(note.getBackColor());
+                    bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_teal_700));
 //                    initBodyEditFragment(requireActivity().findViewById(R.id.note_body_edit_container));
                 });
 
@@ -137,6 +146,7 @@ public class NoteBodyEditFragment extends Fragment {
                     note.setBackColor(color);
                     requireActivity().findViewById(R.id.note_body_edit_container)
                             .setBackgroundColor(note.getBackColor());
+                    bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
 //                    initBodyEditFragment(requireActivity().findViewById(R.id.note_body_edit_container));
                 });
 

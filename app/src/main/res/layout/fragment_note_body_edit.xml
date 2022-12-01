@@ -25,7 +25,6 @@
         android:id="@+id/edit_note_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/frame_border"
         android:gravity="start"
         android:padding="@dimen/body_padding"
         android:text="@string/note_body"
