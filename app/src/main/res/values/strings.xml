@@ -35,7 +35,7 @@
     <string name="delete_confirmation">Current Note %s deleted!</string>
     <string name="Undo">Undo</string>
     <string name="atention">Attention</string>
-    <string name="are_you_sure">Are you really would like delete the Note</string>
+    <string name="are_you_sure">Are you really would like delete the Note?</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
 </resources>

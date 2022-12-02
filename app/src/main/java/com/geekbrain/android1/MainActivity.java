@@ -6,19 +6,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ConfirmationDialogFragment.onConfirmationDialogListener{
 
     private static final String  TAG ="Main_Activity";
 
@@ -120,5 +120,20 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    public void showConfirmationDialog(){
+        ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
+        dialog.show(getSupportFragmentManager(), "ConfirmationDialogFragment");
+    }
 
+
+    @Override
+    public void onDialogPositiveClicked(DialogFragment fragment) {
+        //User touched Positive button
+    }
+
+    @Override
+    public void onDialogNegativeClicked(DialogFragment fragment) {
+        //User touched Negative button
+
+    }
 }

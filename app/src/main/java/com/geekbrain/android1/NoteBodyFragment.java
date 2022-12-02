@@ -1,13 +1,14 @@
 package com.geekbrain.android1;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,7 +31,7 @@ import java.util.UUID;
  * Use the {@link NoteBodyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NoteBodyFragment extends Fragment {
+public class NoteBodyFragment extends Fragment implements ConfirmationDialogFragment.onConfirmationDialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,10 +45,18 @@ public class NoteBodyFragment extends Fragment {
 
     private UUID uuidFragment;
     private Note note;
+    private Answer answer;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    enum Answer{
+        OK,
+        Cancel,
+        Undo,
+        Neutral;
+    }
 
 
     public NoteBodyFragment() {
@@ -181,30 +190,35 @@ public class NoteBodyFragment extends Fragment {
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
                 NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
                 boolean isDelete = true;
-
-                new AlertDialog.Builder(getContext())
+//                showConfirmationDialogFragment();
+                answer = Answer.Neutral;
+                new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.atention)
                         .setMessage(R.string.are_you_sure)
+                        .setCancelable(true)
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
-                                        , String.format(getString(R.string.delete_confirmation), model.getCurrentNote().getName())
-                                        , Snackbar.LENGTH_LONG);
-                                confirmDeleteNote.setAction(R.string.Undo, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        boolean isDelete = false;
-                                    }
-                                });
-                                confirmDeleteNote.show();
-                                //isDelete = true;
+                            public void onClick(DialogInterface dialog1, int which) {
+                                if (model.deleteNote(model.getCurrentNote()) >= 0) {
+                                    NotesFragment notesFragment = new NotesFragment();
+                                    requireActivity().getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.fragment_container, notesFragment)
+                                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
+                                            .commit();
+                                }
                             }
                         })
-                        .setNegativeButton(R.string.cancel, null)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog1, int which) {
+                            }
+                        }).create()
                         .show();
-
-                if (isDelete) {
+                /*ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
+                dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialogFragment");*/
+                Log.i(TAG, "onItemAction: " + answer.toString());
+                /*if (answer == Answer.OK) {
                     if (model.deleteNote(model.getCurrentNote()) >= 0) {
                         NotesFragment notesFragment = new NotesFragment();
                         requireActivity().getSupportFragmentManager()
@@ -213,7 +227,7 @@ public class NoteBodyFragment extends Fragment {
                                 .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
                                 .commit();
                     }
-                }
+                }*/
                 return true;
 
             case R.id.back_action:
@@ -234,7 +248,23 @@ public class NoteBodyFragment extends Fragment {
 //        return false;
     }
 
+    public void showConfirmationDialogFragment(){
+        ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
+        dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialogFragment");
+    }
 
+
+    @Override
+    public void onDialogPositiveClicked(DialogFragment fragment) {
+        //User touched Positive button
+        answer= Answer.OK;
+    }
+
+    @Override
+    public void onDialogNegativeClicked(DialogFragment fragment) {
+        //User touched Negative button
+        answer = Answer.Cancel;
+    }
 
     private void showPalette() {
         PaletteFragment paletteFragment = PaletteFragment.newInstance();
