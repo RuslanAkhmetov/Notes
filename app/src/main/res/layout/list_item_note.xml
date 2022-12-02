@@ -16,7 +16,7 @@
         android:textSize="@dimen/note_name_text_size"
         android:padding="4dp"
         android:layout_margin="@dimen/minimum_margin_for_frame"
-        android:textColor="@color/black"
+
         android:text="@string/note_name"/>
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:padding="4dp"
         android:layout_margin="@dimen/minimum_margin_for_frame"
-        android:textColor="@color/black"
+
         android:textSize="@dimen/note_body_text_size"
         android:text="@string/note_date"/>
 

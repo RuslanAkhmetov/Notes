@@ -153,9 +153,9 @@ public class NotesFragment extends Fragment {
             View view = layoutInflater.inflate(layout.list_item_note, null, false);
             if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
                 Log.i(TAG, "fragmentInit: note.getBackColor()");
-                view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_teal));
+                view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_teal_700));
             } else if  (note.getBackColor() == getResources().getColor(color.purple_200, null)) {
-                view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_purple));
+                view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_purple_200));
             } else {
                 view.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
             }
@@ -194,8 +194,8 @@ public class NotesFragment extends Fragment {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .add(id.note_body_container, noteBodyFragment)
-                .addToBackStack("")
+                .replace(id.note_body_container, noteBodyFragment)
+//                .addToBackStack("")
                 .commit();
     }
 
@@ -205,8 +205,8 @@ public class NotesFragment extends Fragment {
         list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .add(id.note_body_container, noteBodyFragment)
-                .addToBackStack("")
+                .replace(id.note_body_container, noteBodyFragment)
+//                .addToBackStack("")
 //                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }

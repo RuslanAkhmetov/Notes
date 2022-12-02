@@ -33,4 +33,10 @@
     <string name="add_new_note">Добавить заметку</string>
     <string name="success_add">Note add</string>
     <string name="user_avatar">User Avatar</string>
+    <string name="delete_confirmation">Текущая запись %s удалена!</string>
+    <string name="Undo">Отмена</string>
+    <string name="atention">Внимание</string>
+    <string name="are_you_sure">Вы хотите удалить запись?</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Да</string>
 </resources>
