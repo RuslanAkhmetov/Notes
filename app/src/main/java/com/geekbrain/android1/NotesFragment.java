@@ -92,10 +92,6 @@ public class NotesFragment extends Fragment {
     }
 
 
-
-/*    private void initToolbar(Toolbar toolbar) {
-    }*/
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -148,20 +144,13 @@ public class NotesFragment extends Fragment {
                 view.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
             }
 
-
-//            view.setBackgroundResource(drawable.frame_border);
             TextView nName = view.findViewById(id.edit_note_name);
             TextView nDate = view.findViewById(id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-//            nName.setBackgroundColor(note.getBackColor());
-//            nDate.setBackgroundColor(note.getBackColor());
-
 
             view.setOnClickListener(v -> showNote(v, note));
-//            view.setBackgroundColor(note.getBackColor());
             parent.addView(view);
-//            Log.d(TAG, "Created " + note.getName());
         }
 
     }
@@ -200,7 +189,9 @@ public class NotesFragment extends Fragment {
     }
 
     public void fragmentInit() {
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         model.initNotes().observe(requireActivity(),
                     notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
     }

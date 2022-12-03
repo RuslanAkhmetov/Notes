@@ -40,8 +40,6 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             creationExtras -> {
                 NotesApplication app = (NotesApplication) creationExtras.get(APPLICATION_KEY);
                 assert app != null;
-
-
                 return new NotesViewModel(app.getResourceProvider());
             }
     );
