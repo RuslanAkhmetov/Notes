@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">NotesApplication</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note_name">Note name</string>
@@ -38,4 +38,18 @@
     <string name="are_you_sure">Are you really would like delete the Note?</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="title1">Green Forest</string>
+    <string name="title2">Mountain</string>
+    <string name="title3">Waterfall</string>
+    <string name="title4">Sky</string>
+    <string name="title5">Fog</string>
+    <string name="title6">Glade</string>
+    <string name="title7">Autumn</string>
+    <string name="description1">Fabulous green forest</string>
+    <string name="description2">Lonely Mountain</string>
+    <string name="description3">Stormy waterfall in the forest</string>
+    <string name="description4">Beautiful dark sky</string>
+    <string name="description5">Mystical Mist</string>
+    <string name="description6">Sunny meadow</string>
+    <string name="description7">Red Autumn</string>
 </resources>

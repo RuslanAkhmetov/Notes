@@ -109,7 +109,8 @@ public class NoteBodyEditFragment extends Fragment {
             note = arguments.getParcelable(NOTE);
         }
 
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        NotesViewModel model = new ViewModelProvider(requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
 
         if (note == null && !addNew) {
             note =  model.getCurrentNote().copy();
@@ -193,7 +194,9 @@ public class NoteBodyEditFragment extends Fragment {
 
     public boolean onItemAction(@NonNull MenuItem item) {
         int id = item.getItemId();
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         switch (id) {
             case R.id.save_action:
                 Log.i(TAG, "onItemAction: ");

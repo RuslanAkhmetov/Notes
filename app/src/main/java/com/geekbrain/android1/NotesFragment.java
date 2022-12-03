@@ -82,20 +82,6 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        /*NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-        Context context = requireActivity().getApplicationContext();
-        LinearLayout viewGroup = new LinearLayout(context);
-        viewGroup.setOrientation(LinearLayout.VERTICAL);
-
-
-        initToolbar(toolbar);
-        setHasOptionsMenu(true);
-        viewGroup.addView(toolbar);
-        if (savedInstanceState == null) {
-            model.getNotes().observe(requireActivity(),
-                    notes -> layoutInit(context, viewGroup, notes));
-        }
-        return viewGroup;*/
 
         return inflater.inflate(R.layout.fragment_notes, container, false);
     }
@@ -107,20 +93,22 @@ public class NotesFragment extends Fragment {
 
 
 
-    private void initToolbar(Toolbar toolbar) {
-    }
+/*    private void initToolbar(Toolbar toolbar) {
+    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         if (savedInstanceState == null) {
             model.initNotes().observe(requireActivity(),
                     notes -> fragmentInit((ViewGroup) view, notes));
         }
     }
 
-    private void layoutInit(Context context, ViewGroup parent, List<Note> notes) {
+   /* private void layoutInit(Context context, ViewGroup parent, List<Note> notes) {
 
 
         for (Note note : notes) {
@@ -144,7 +132,7 @@ public class NotesFragment extends Fragment {
 //            Log.d(TAG, "Created " + note.getName());
         }
 
-    }
+    }*/
 
     private void fragmentInit(ViewGroup parent, List<Note> notes) {
         LayoutInflater layoutInflater = getLayoutInflater();
