@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.geekbrain.android1.ui.NotesListAdapter;
+import com.geekbrain.android1.ui.OnItemClickListener;
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
 import java.util.List;
@@ -83,25 +87,56 @@ public class NotesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.fragment_notes, container, false);
+//        return inflater.inflate(R.layout.fragment_notes, container, false);
+        View view =  inflater.inflate(layout.recycler_list_fragment, container, false);
+        RecyclerView recyclerView = view.findViewById(id.notes_recycler_view);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+
+        if (savedInstanceState == null) {
+            model.initNotes().observe(requireActivity(),
+                    notes -> initRecyclerView(recyclerView, notes));
+        }
+        return view;
     }
+
+    private void initRecyclerView(RecyclerView recyclerView, List<Note>notes){
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        NotesListAdapter notesListAdapter = new NotesListAdapter(notes);
+        recyclerView.setAdapter(notesListAdapter);
+
+        notesListAdapter.setItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+                showNote(view, position);
+            }
+        });
+    }
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
     }
+
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NotesViewModel model = new ViewModelProvider(
+        /*NotesViewModel model = new ViewModelProvider(
                 requireActivity(),
                 ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         if (savedInstanceState == null) {
             model.initNotes().observe(requireActivity(),
-                    notes -> fragmentInit((ViewGroup) view, notes));
-        }
+                    notes -> fragmentInit((ViewGroup) view, notes));}*/
+
     }
 
    /* private void layoutInit(Context context, ViewGroup parent, List<Note> notes) {
@@ -167,6 +202,14 @@ public class NotesFragment extends Fragment {
         }
     }
 
+    private void showNote(View view, int index) {
+        if (isLandscape()) {
+            showLandNote(view, index);
+        } else {
+            showPortNode(view, index);
+        }
+    }
+
     private void showLandNote(View view, Note note) {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
         requireActivity().getSupportFragmentManager()
@@ -178,7 +221,32 @@ public class NotesFragment extends Fragment {
 
     private void showPortNode(View view, Note note) {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
-        View list_layout = requireActivity().findViewById(id.nested_scroll_view);
+        View list_layout = requireActivity().findViewById(id.fragment_container);
+        list_layout.setVisibility(View.GONE);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(id.note_body_container, noteBodyFragment)
+//                .addToBackStack("")
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+    }
+
+    private void showLandNote(View view, int index) {
+        NotesViewModel model = new ViewModelProvider(requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(model.getNote(index));
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(id.note_body_container, noteBodyFragment)
+//                .addToBackStack("")
+                .commit();
+    }
+
+    private void showPortNode(View view, int index) {
+        NotesViewModel model = new ViewModelProvider(requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(model.getNote(index));
+        View list_layout = requireActivity().findViewById(id.fragment_container);
         list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

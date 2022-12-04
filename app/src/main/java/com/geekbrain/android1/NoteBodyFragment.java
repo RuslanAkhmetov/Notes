@@ -180,7 +180,8 @@ public class NoteBodyFragment extends Fragment {
                 return true;
             case R.id.delete_action:
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
-                NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+                NotesViewModel model = new ViewModelProvider(requireActivity(),
+                        ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
                 boolean isDelete = true;
 
                 new AlertDialog.Builder(getContext())
@@ -219,7 +220,7 @@ public class NoteBodyFragment extends Fragment {
 
             case R.id.back_action:
 
-                View list_layout = requireActivity().findViewById(R.id.nested_scroll_view);
+                View list_layout = requireActivity().findViewById(R.id.fragment_container);
                 list_layout.setVisibility(View.VISIBLE);
                 NotesFragment notesFragment = new NotesFragment();
                 requireActivity().getSupportFragmentManager()

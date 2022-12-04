@@ -53,5 +53,6 @@
     <string name="description5">Мистический туман</string>
     <string name="description6">Солнечная поляна</string>
     <string name="description7">Красная осень</string>
+    <string name="no_such_index">\"There is no notes (%d) \"</string>
 
 </resources>

@@ -52,4 +52,5 @@
     <string name="description5">Mystical Mist</string>
     <string name="description6">Sunny meadow</string>
     <string name="description7">Red Autumn</string>
+    <string name="no_such_index">\"There is no notes (%d) \"</string>
 </resources>

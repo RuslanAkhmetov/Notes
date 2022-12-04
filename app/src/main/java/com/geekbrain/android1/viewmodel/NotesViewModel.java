@@ -4,7 +4,6 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 
 import static com.geekbrain.android1.R.array.descriptions;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -56,6 +55,8 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     private List<Note> noteList;
 
+    private Note currentNote;
+
     public Note getCurrentNote() {
         return currentNote;
     }
@@ -64,7 +65,12 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
         this.currentNote = currentNote;
     }
 
-    private Note currentNote;
+    public Note getNote(int index){
+        if (index < notes.getValue().size())
+            return notes.getValue().get(index);
+        else
+            throw new NullPointerException (String.format( resourceProvider.getString(R.string.no_such_index), index));
+    }
 
     public LiveData<List<Note>> initNotes() {
         if (notes == null) {
@@ -112,7 +118,6 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     private void init(int num) {
         List<Note> list = new ArrayList<>();
         for (int i = 0; i < num; i++) {
-
             list.add(new Note("Notes " + i, "This is note " + i, generateDate(i) , 0));
         }
         notes.setValue(list);
