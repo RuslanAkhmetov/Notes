@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">NotesApplication</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note_name">Название</string>
@@ -13,7 +13,7 @@
     <string name="back">Назад</string>
     <string name="about">О программе</string>
     <string name="search_action">Искать в заметках</string>
-    <string name="cozy_view">Несколько столбцов</string>
+    <string name="cozy_view">Изменить вид</string>
     <string name="unsuccess_save">Не удалось сохранить!</string>
     <string name="success_save">Запись сохранена</string>
     <string name="save_note">Сохранить</string>
@@ -31,7 +31,7 @@
     <string name="add_new_notes_to_end">Добавить новые пункты в конец</string>
     <string name="move_marked_items_to_the_end">Перемещать отмеченные пункты в конец</string>
     <string name="add_new_note">Добавить заметку</string>
-    <string name="success_add">Note add</string>
+    <string name="success_add">Заметка добавлена</string>
     <string name="user_avatar">User Avatar</string>
     <string name="delete_confirmation">Текущая запись %s удалена!</string>
     <string name="Undo">Отмена</string>
@@ -54,5 +54,6 @@
     <string name="description6">Солнечная поляна</string>
     <string name="description7">Красная осень</string>
     <string name="no_such_index">\"There is no notes (%d) \"</string>
+    <string name="linear_view">Линейный вид</string>
 
 </resources>

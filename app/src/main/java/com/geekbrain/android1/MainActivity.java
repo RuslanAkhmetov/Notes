@@ -20,8 +20,13 @@ import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String  TAG ="Main_Activity";
+    private static final String TAG = "Main_Activity";
 
+    public static int getColumn() {
+        return column;
+    }
+
+    private static int column = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,22 +34,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
-        NotesFragment notesFragment = new NotesFragment();
+
+        NotesFragment notesFragment = NotesFragment.newInstance(column);
         setSupportActionBar(findViewById(R.id.toolbar));
 
         initToolBarDrawer();
 
-        FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-       if (savedInstanceState == null) {
-                    fragmentTransaction
-                            .add(R.id.fragment_container, notesFragment)
-                            .add(R.id.note_body_container, NoteBodyFragment.newInstance());
+        if (savedInstanceState == null) {
+            fragmentTransaction
+                    .add(R.id.fragment_container, notesFragment)
+                    .add(R.id.note_body_container, NoteBodyFragment.newInstance());
         } else {
             Log.i(TAG, "On Create");
-                    fragmentTransaction
-                            .replace(R.id.fragment_container, notesFragment)
-                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
+            fragmentTransaction
+                    .replace(R.id.fragment_container, notesFragment)
+                    .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
         }
         fragmentTransaction.commit();
 //
@@ -59,12 +65,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.app_bar_search:
                 Toast.makeText(this, R.string.search_action, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.cozy_view_action:
-                Toast.makeText(this, R.string.cozy_view, Toast.LENGTH_SHORT).show();
+                column = column == 1 ? 2 : 1;
+                if (column == 1) {
+                    Toast.makeText(this, R.string.linear_view, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.cozy_view, Toast.LENGTH_SHORT).show();
+                }
+                NotesFragment notesFragment = NotesFragment.newInstance(column);
+                setSupportActionBar(findViewById(R.id.toolbar));
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction
+                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
+                fragmentTransaction.commit();
+
+
                 return true;
             default:
                 return false;
@@ -72,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
         //return super.onOptionsItemSelected(item);
     }
 
-    private void initToolBarDrawer(){
+    private void initToolBarDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initDrawer(toolbar);
     }
 
-    private void initDrawer(Toolbar toolbar){
+    private void initDrawer(Toolbar toolbar) {
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
@@ -93,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            switch (id){
+            switch (id) {
                 case R.id.drawer_notes:
 
                 case R.id.drawer_notification:
@@ -110,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
 
     private void openSettingFragment() {

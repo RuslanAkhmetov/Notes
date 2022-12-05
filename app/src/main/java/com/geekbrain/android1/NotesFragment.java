@@ -2,7 +2,6 @@ package com.geekbrain.android1;
 
 import static com.geekbrain.android1.R.*;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -12,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,9 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.geekbrain.android1.ui.NotesListAdapter;
 import com.geekbrain.android1.ui.OnItemClickListener;
@@ -42,11 +40,11 @@ public class NotesFragment extends Fragment {
     private final String TAG = "Notes_Fragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String Q_COLUMNS = "qColumns";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private int columns;
     private String mParam2;
 
     public NotesFragment() {
@@ -57,16 +55,14 @@ public class NotesFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param columns Parameter 1.
      * @return A new instance of fragment NotesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NotesFragment newInstance(String param1, String param2) {
+    public static NotesFragment newInstance(int columns) {
         NotesFragment fragment = new NotesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(Q_COLUMNS, columns);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +72,7 @@ public class NotesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            columns = getArguments().getInt(Q_COLUMNS);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -96,15 +92,20 @@ public class NotesFragment extends Fragment {
 
         if (savedInstanceState == null) {
             model.initNotes().observe(requireActivity(),
-                    notes -> initRecyclerView(recyclerView, notes));
+                    notes -> initRecyclerView(recyclerView, notes, columns));
         }
         return view;
     }
 
-    private void initRecyclerView(RecyclerView recyclerView, List<Note>notes){
+    private void initRecyclerView(RecyclerView recyclerView, List<Note>notes, int columns){
+        if (columns == 1){
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(linearLayoutManager);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        } else {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            recyclerView.setLayoutManager(gridLayoutManager);
+        }
 
         NotesListAdapter notesListAdapter = new NotesListAdapter(notes);
         recyclerView.setAdapter(notesListAdapter);
@@ -130,16 +131,10 @@ public class NotesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*NotesViewModel model = new ViewModelProvider(
-                requireActivity(),
-                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
-        if (savedInstanceState == null) {
-            model.initNotes().observe(requireActivity(),
-                    notes -> fragmentInit((ViewGroup) view, notes));}*/
-
     }
 
-   /* private void layoutInit(Context context, ViewGroup parent, List<Note> notes) {
+
+    /* private void layoutInit(Context context, ViewGroup parent, List<Note> notes) {
 
 
         for (Note note : notes) {
@@ -194,6 +189,13 @@ public class NotesFragment extends Fragment {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    private void showNote(View view, int index) {
+        NotesViewModel model = new ViewModelProvider(requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+        Note note = model.getNote(index);
+        showNote(view, note);
+    }
+
     private void showNote(View view, Note note) {
         if (isLandscape()) {
             showLandNote(view, note);
@@ -202,13 +204,7 @@ public class NotesFragment extends Fragment {
         }
     }
 
-    private void showNote(View view, int index) {
-        if (isLandscape()) {
-            showLandNote(view, index);
-        } else {
-            showPortNode(view, index);
-        }
-    }
+
 
     private void showLandNote(View view, Note note) {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
@@ -231,30 +227,7 @@ public class NotesFragment extends Fragment {
                 .commit();
     }
 
-    private void showLandNote(View view, int index) {
-        NotesViewModel model = new ViewModelProvider(requireActivity(),
-                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(model.getNote(index));
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(id.note_body_container, noteBodyFragment)
-//                .addToBackStack("")
-                .commit();
-    }
 
-    private void showPortNode(View view, int index) {
-        NotesViewModel model = new ViewModelProvider(requireActivity(),
-                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
-        NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(model.getNote(index));
-        View list_layout = requireActivity().findViewById(id.fragment_container);
-        list_layout.setVisibility(View.GONE);
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(id.note_body_container, noteBodyFragment)
-//                .addToBackStack("")
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
-    }
 
     public void fragmentInit() {
         NotesViewModel model = new ViewModelProvider(

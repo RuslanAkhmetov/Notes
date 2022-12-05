@@ -129,7 +129,6 @@ public class NoteBodyFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initBodyFragment(view);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
@@ -169,6 +168,7 @@ public class NoteBodyFragment extends Fragment  {
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
+                dateText.setText(note.getNoteDate().toString());
                 if (note.getBackColor() == 0) {
                     bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
                 } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
@@ -176,7 +176,7 @@ public class NoteBodyFragment extends Fragment  {
                 } else if (note.getBackColor() == getResources().getColor(R.color.purple_200, null)) {
                     bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
                 }
-                dateText.setText(note.getNoteDate().toString());
+
             } else {
                 Log.i(TAG, "Can't make NoteBodyFragment");
             }

@@ -87,8 +87,9 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
-                    if (itemClickListener!=null)
+                    if (itemClickListener!=null) {
                         itemClickListener.onItemClick(view, position);
+                    }
                 }
             });
         }

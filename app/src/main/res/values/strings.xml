@@ -12,7 +12,7 @@
     <string name="back">Back</string>
     <string name="about">About</string>
     <string name="search_action">Search</string>
-    <string name="cozy_view">Cozy view</string>
+    <string name="cozy_view">Change view</string>
     <string name="save_note">Save</string>
     <string name="unsuccess_save">Save is not success!</string>
     <string name="success_save">Note saved</string>
@@ -53,4 +53,5 @@
     <string name="description6">Sunny meadow</string>
     <string name="description7">Red Autumn</string>
     <string name="no_such_index">\"There is no notes (%d) \"</string>
+    <string name="linear_view">Linear view</string>
 </resources>
