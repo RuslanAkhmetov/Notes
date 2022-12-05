@@ -118,9 +118,9 @@ public class NoteBodyEditFragment extends Fragment {
 
         try {
             if (note != null) {
-                if (note.getBackColor() != 0){
+/*                if (note.getBackColor() != 0){
                     view.setBackgroundColor(note.getBackColor());
-                }
+                }*/
                 EditText nameEditText = view.findViewById(R.id.edit_note_name);
                 EditText bodyEditText = view.findViewById(R.id.edit_note_body);
                 if (note.getBackColor() == 0){

@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.UUID;
 
@@ -30,7 +29,7 @@ import java.util.UUID;
  * Use the {@link NoteBodyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NoteBodyFragment extends Fragment {
+public class NoteBodyFragment extends Fragment  {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,9 +40,33 @@ public class NoteBodyFragment extends Fragment {
     private static final String NOTE = "note";
 
     private static final String TAG = "NoteBody_Fragment";
+    private static final String CONFIRMATION = "Confirm_Dialog";
+    private static final int REQUEST_CODE = 0;
+
 
     private UUID uuidFragment;
     private Note note;
+    private Callbacks callbacks = new Callbacks() {
+        @Override
+        public void OnPositiveButtonClicked() {
+            NotesViewModel model = new ViewModelProvider(getActivity(),
+                    ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+            if (model.deleteNote(model.getCurrentNote()) >= 0) {
+                NotesFragment notesFragment = new NotesFragment();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
+                        .commit();
+            }
+        }
+
+        @Override
+        public void OnNegativeButtonClicked() {
+
+        }
+    };
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -88,6 +111,10 @@ public class NoteBodyFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
             uuidFragment = (UUID) getArguments().getSerializable(NOTE_UUID);
             note = getArguments().<Note>getParcelable(NOTE);
+            /*if (getActivity().getSupportFragmentManager().findFragmentByTag(CONFIRMATION) != null){
+                DialogFragment fragment = (DialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag(CONFIRMATION);
+                fragment.setCallbacks(callbacks);*/
+
         }
     }
 
@@ -142,9 +169,9 @@ public class NoteBodyFragment extends Fragment {
 
                 nameText.setText(note.getName());
                 bodyText.setText(note.getBody());
-                if (note.getBackColor() == 0){
+                if (note.getBackColor() == 0) {
                     bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
-                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null))  {
+                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
                     bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_teal_700));
                 } else if (note.getBackColor() == getResources().getColor(R.color.purple_200, null)) {
                     bodyText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
@@ -180,17 +207,23 @@ public class NoteBodyFragment extends Fragment {
                 return true;
             case R.id.delete_action:
                 //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
-                NotesViewModel model = new ViewModelProvider(requireActivity(),
-                        ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+                /*NotesViewModel model = new ViewModelProvider(requireActivity(),
+                        ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);*/
                 boolean isDelete = true;
 
+                DialogFragment dialogFragment = new DialogFragment();
+                dialogFragment.setCallbacks(callbacks);
+                dialogFragment.setTargetFragment(this, REQUEST_CODE);
+                dialogFragment.show(requireActivity().getSupportFragmentManager(), CONFIRMATION);
+/*
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.atention)
                         .setMessage(R.string.are_you_sure)
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
+*/
+/*                                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
                                         , String.format(getString(R.string.delete_confirmation), model.getCurrentNote().getName())
                                         , Snackbar.LENGTH_LONG);
                                 confirmDeleteNote.setAction(R.string.Undo, new View.OnClickListener() {
@@ -199,14 +232,24 @@ public class NoteBodyFragment extends Fragment {
                                         boolean isDelete = false;
                                     }
                                 });
-                                confirmDeleteNote.show();
+                                confirmDeleteNote.show();*//*
+
                                 //isDelete = true;
+                                if (model.deleteNote(model.getCurrentNote()) >= 0) {
+                                    NotesFragment notesFragment = new NotesFragment();
+                                    requireActivity().getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.fragment_container, notesFragment)
+                                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
+                                            .commit();
+                                }
                             }
                         })
                         .setNegativeButton(R.string.cancel, null)
                         .show();
+*/
 
-                if (isDelete) {
+/*                if (isDelete) {
                     if (model.deleteNote(model.getCurrentNote()) >= 0) {
                         NotesFragment notesFragment = new NotesFragment();
                         requireActivity().getSupportFragmentManager()
@@ -215,7 +258,7 @@ public class NoteBodyFragment extends Fragment {
                                 .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
                                 .commit();
                     }
-                }
+                }*/
                 return true;
 
             case R.id.back_action:
@@ -235,6 +278,7 @@ public class NoteBodyFragment extends Fragment {
         }
 //        return false;
     }
+
 
 
 
@@ -261,6 +305,4 @@ public class NoteBodyFragment extends Fragment {
     private boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
-
-
 }
