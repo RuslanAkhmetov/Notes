@@ -65,11 +65,11 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
         this.currentNote = currentNote;
     }
 
-    public Note getNote(int index){
+    public Note getNote(int index) {
         if (index < notes.getValue().size())
             return notes.getValue().get(index);
         else
-            throw new NullPointerException (String.format( resourceProvider.getString(R.string.no_such_index), index));
+            throw new NullPointerException(String.format(resourceProvider.getString(R.string.no_such_index), index));
     }
 
     public LiveData<List<Note>> initNotes() {
@@ -122,11 +122,11 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     }
 
 
-    private void init(){
+    private void init() {
         List<Note> list = new ArrayList<>();
         Context context = NotesApplication.getContext();
-        for(int i = 0; i < resourceProvider.getStringArray(R.array.titles).length; i++) {
-            list.add(new Note( resourceProvider.getStringArray(R.array.titles)[i], resourceProvider.getStringArray(descriptions)[i],generateDate(i) , 0));
+        for (int i = 0; i < resourceProvider.getStringArray(R.array.titles).length; i++) {
+            list.add(new Note(resourceProvider.getStringArray(R.array.titles)[i], resourceProvider.getStringArray(descriptions)[i], generateDate(i), 0));
             Log.i(TAG, "init: " + list.get(i).getName());
         }
 
@@ -136,29 +136,41 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     private void init(int num) {
         List<Note> list = new ArrayList<>();
         for (int i = 0; i < num; i++) {
-            list.add(new Note("Notes " + i, "This is note " + i, generateDate(i) , 0));
+            list.add(new Note("Notes " + i, "This is note " + i, generateDate(i), 0));
         }
         notes.setValue(list);
     }
 
     @Override
     public int deleteNote(Note note) {                             //return index of current note after delete or -1 if delete is impossible
-        try{
-        List<Note> list = notes.getValue();
-        if (list.size()==1)
-            return -1;
-        if (note != null) {
-            int removeIndex = list.indexOf(note);
-            notes.getValue().get(removeIndex).setInBasket(true);
-            if (removeIndex == list.size()-1) {
-                setCurrentNote(list.get(removeIndex-1));
-                return removeIndex-1;
-            } else {
-                setCurrentNote(list.get(removeIndex+1));
-                return removeIndex + 1;
+        try {
+            List<Note> list = notes.getValue();
+            if (list.size() == 1)
+                return -1;
+            if (note != null) {
+                int removeIndex = list.indexOf(note);
+                if (notes.getValue().get(removeIndex).isInBasket()) {
+                    notes.getValue().remove(removeIndex);
+                    if (removeIndex == list.size() - 1) {
+                        setCurrentNote(list.get(removeIndex - 1));
+                        return removeIndex - 1;
+                    } else {
+                        setCurrentNote(list.get(removeIndex));
+                        return removeIndex;
+                    }
+                }
+                else {
+                    notes.getValue().get(removeIndex).setInBasket(true);
+                    if (removeIndex == list.size() - 1) {
+                        setCurrentNote(list.get(removeIndex - 1));
+                        return removeIndex - 1;
+                    } else {
+                        setCurrentNote(list.get(removeIndex + 1));
+                        return removeIndex + 1;
+                    }
+                }
             }
-        }
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "deleteNote: impossible");
         }
         return -1;
@@ -166,22 +178,22 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public int archivenode(Note note) {
-        try{
+        try {
             List<Note> list = notes.getValue();
-            if (list.size()==1)
+            if (list.size() == 1)
                 return -1;
             if (note != null) {
                 int removeIndex = list.indexOf(note);
                 notes.getValue().get(removeIndex).setArchived(true);
-                if (removeIndex == list.size()-1) {
-                    setCurrentNote(list.get(removeIndex-1));
-                    return removeIndex-1;
+                if (removeIndex == list.size() - 1) {
+                    setCurrentNote(list.get(removeIndex - 1));
+                    return removeIndex - 1;
                 } else {
-                    setCurrentNote(list.get(removeIndex+1));
+                    setCurrentNote(list.get(removeIndex + 1));
                     return removeIndex + 1;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "archiveNote: impossible");
         }
         return -1;
@@ -189,22 +201,22 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public int finalDelete(Note note) {
-        try{
+        try {
             List<Note> list = notes.getValue();
-            if (list.size()==1)
+            if (list.size() == 1)
                 return -1;
             if (note != null) {
                 int removeIndex = list.indexOf(note);
                 notes.getValue().remove(removeIndex);
-                if (removeIndex == list.size()-1) {
-                    setCurrentNote(list.get(removeIndex-1));
-                    return removeIndex-1;
+                if (removeIndex == list.size() - 1) {
+                    setCurrentNote(list.get(removeIndex - 1));
+                    return removeIndex - 1;
                 } else {
                     setCurrentNote(list.get(removeIndex));
                     return removeIndex;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "deleteNote: impossible");
         }
         return -1;
@@ -219,7 +231,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             currentNote.setNoteDate(LocalDate.now());
             Log.i(TAG, "editCurrentNote: " + LocalDate.now());
             return notes.getValue().indexOf(currentNote);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "editCurrentNote: " + e.getMessage());
             return -1;
         }
@@ -235,13 +247,13 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             }
             currentNote = note;
             return notes.getValue().indexOf(currentNote);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "addNote: " + e.getMessage());
             return -1;
         }
     }
 
-    private LocalDate generateDate (int i) {
+    private LocalDate generateDate(int i) {
         int d = i % 30 == 0 ? 30 : i % 30;
         String day = String.valueOf(d).length() == 1 ? "0" + d : String.valueOf(d);
         int m = 1 + i / 30;
