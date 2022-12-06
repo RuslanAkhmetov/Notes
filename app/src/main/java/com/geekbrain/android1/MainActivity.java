@@ -6,21 +6,48 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
 
-public class MainActivity extends AppCompatActivity implements ConfirmationDialogFragment.onConfirmationDialogListener{
+public class MainActivity extends AppCompatActivity {
 
-    private static final String  TAG ="Main_Activity";
+    private static final String TAG = "Main_Activity";
+
+    private static int column = 1;
+    private static boolean inBasket = false;
+    private static boolean archived    = false;
+
+
+    public static boolean isInBasket() {
+        return inBasket;
+    }
+    public static void setInBasket(boolean inBasket) {
+        MainActivity.inBasket = inBasket;
+    }
+    public static boolean isArchived() {
+        return archived;
+    }
+    public static void setArchived(boolean archived) {
+        MainActivity.archived = archived;
+    }
+    public static void setColumn(int column) {
+        if (column != 1)
+            MainActivity.column = 2;
+        else
+            MainActivity.column = 1;
+    }
+    public static int getColumn() {
+        return column;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,25 +55,27 @@ public class MainActivity extends AppCompatActivity implements ConfirmationDialo
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
-        NotesFragment notesFragment = new NotesFragment();
+
+        NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
+
         setSupportActionBar(findViewById(R.id.toolbar));
 
         initToolBarDrawer();
 
-        FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-       if (savedInstanceState == null) {
-                    fragmentTransaction
-                            .add(R.id.fragment_container, notesFragment)
-                            .add(R.id.note_body_container, NoteBodyFragment.newInstance());
+        if (savedInstanceState == null) {
+
+            fragmentTransaction
+                    .add(R.id.fragment_container, notesFragment)
+                    .add(R.id.note_body_container, NoteBodyFragment.newInstance());
         } else {
             Log.i(TAG, "On Create");
-                    fragmentTransaction
-                            .replace(R.id.fragment_container, notesFragment)
-                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
+            fragmentTransaction
+                    .replace(R.id.fragment_container, notesFragment)
+                    .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
         }
         fragmentTransaction.commit();
-//
     }
 
     @Override
@@ -58,12 +87,24 @@ public class MainActivity extends AppCompatActivity implements ConfirmationDialo
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.app_bar_search:
                 Toast.makeText(this, R.string.search_action, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.cozy_view_action:
-                Toast.makeText(this, R.string.cozy_view, Toast.LENGTH_SHORT).show();
+                setColumn(getColumn() == 1 ? 2 : 1);
+                if (column == 1) {
+                    Toast.makeText(this, R.string.linear_view, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.two_columns, Toast.LENGTH_SHORT).show();
+                }
+                NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
+                setSupportActionBar(findViewById(R.id.toolbar));
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction
+                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
+                fragmentTransaction.commit();
                 return true;
             default:
                 return false;
@@ -71,13 +112,13 @@ public class MainActivity extends AppCompatActivity implements ConfirmationDialo
         //return super.onOptionsItemSelected(item);
     }
 
-    private void initToolBarDrawer(){
+    private void initToolBarDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initDrawer(toolbar);
     }
 
-    private void initDrawer(Toolbar toolbar){
+    private void initDrawer(Toolbar toolbar) {
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
@@ -92,15 +133,29 @@ public class MainActivity extends AppCompatActivity implements ConfirmationDialo
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            switch (id){
+            switch (id) {
                 case R.id.drawer_notes:
-
+                    setArchived(false);
+                    setInBasket(false);
+                    drawerLayout.close();
+                    //TODO UI update
+                    return true;
                 case R.id.drawer_notification:
                     drawerLayout.close();
                     return true;
                 case R.id.drawer_SETTINGS:
                     openSettingFragment();
                     drawerLayout.close();
+                    return true;
+                case R.id.drawer_basket:
+                    setInBasket(true);
+                    drawerLayout.close();
+                    //TODO UI update
+                    return true;
+                case R.id.drawer_archive:
+                    setArchived(true);
+                    drawerLayout.close();
+                    //TODO UI update
                     return true;
                 default:
                     return false;
@@ -110,7 +165,11 @@ public class MainActivity extends AppCompatActivity implements ConfirmationDialo
 
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
 
+        super.onSaveInstanceState(outState);
+    }
 
     private void openSettingFragment() {
         getSupportFragmentManager()
@@ -120,20 +179,5 @@ public class MainActivity extends AppCompatActivity implements ConfirmationDialo
                 .commit();
     }
 
-    public void showConfirmationDialog(){
-        ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
-        dialog.show(getSupportFragmentManager(), "ConfirmationDialogFragment");
-    }
 
-
-    @Override
-    public void onDialogPositiveClicked(DialogFragment fragment) {
-        //User touched Positive button
-    }
-
-    @Override
-    public void onDialogNegativeClicked(DialogFragment fragment) {
-        //User touched Negative button
-
-    }
 }

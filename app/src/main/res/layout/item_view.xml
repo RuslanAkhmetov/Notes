@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/layout_margin"
+
+    android:orientation="vertical">
+
+<!--    android:background="@drawable/frame_border"-->
+
+    <TextView
+        android:id="@+id/note_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/note_name_text_size"
+        android:padding="4dp"
+        android:layout_margin="@dimen/minimum_margin_for_frame"
+
+        android:text="@string/note_name"/>
+
+    <TextView
+        android:id="@+id/note_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_margin="@dimen/minimum_margin_for_frame"
+
+        android:textSize="@dimen/note_body_text_size"
+        android:text="@string/note_date"/>
+
+    <TextView
+        android:id="@+id/note_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_margin="@dimen/minimum_margin_for_frame"
+
+        android:textSize="@dimen/note_body_text_size"
+        android:text="@string/note_date"/>
+
+</LinearLayout>

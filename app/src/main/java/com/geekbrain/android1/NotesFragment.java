@@ -2,7 +2,6 @@ package com.geekbrain.android1;
 
 import static com.geekbrain.android1.R.*;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -12,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,13 +21,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
+import com.geekbrain.android1.ui.NotesListAdapter;
+import com.geekbrain.android1.ui.OnItemClickListener;
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,12 +41,14 @@ public class NotesFragment extends Fragment {
     private final String TAG = "Notes_Fragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String Q_COLUMNS = "qColumns";
+    private static final String IN_BASKET = "ib_basket";
+    private static final String ARCHIVED = "archived";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int columns = 1;
+    private boolean inBasket;
+    private boolean archived;
 
     public NotesFragment() {
         // Required empty public constructor
@@ -53,16 +58,16 @@ public class NotesFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param columns Parameter 1.
      * @return A new instance of fragment NotesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NotesFragment newInstance(String param1, String param2) {
+    public static NotesFragment newInstance(int columns, boolean inBasket, boolean archived) {
         NotesFragment fragment = new NotesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(Q_COLUMNS, columns);
+        args.putBoolean(IN_BASKET, inBasket);
+        args.putBoolean(ARCHIVED, archived);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,8 +77,9 @@ public class NotesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            columns = getArguments().getInt(Q_COLUMNS);
+            inBasket = getArguments().getBoolean(IN_BASKET);
+            archived = getArguments().getBoolean(ARCHIVED);
         }
     }
 
@@ -82,69 +88,63 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        /*NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
-        Context context = requireActivity().getApplicationContext();
-        LinearLayout viewGroup = new LinearLayout(context);
-        viewGroup.setOrientation(LinearLayout.VERTICAL);
 
-
-        initToolbar(toolbar);
-        setHasOptionsMenu(true);
-        viewGroup.addView(toolbar);
-        if (savedInstanceState == null) {
-            model.getNotes().observe(requireActivity(),
-                    notes -> layoutInit(context, viewGroup, notes));
-        }
-        return viewGroup;*/
-
-        return inflater.inflate(R.layout.fragment_notes, container, false);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
-
-    private void initToolbar(Toolbar toolbar) {
+        return inflater.inflate(layout.recycler_list_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        RecyclerView recyclerView = view.findViewById(id.notes_recycler_view);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+
         if (savedInstanceState == null) {
             model.initNotes().observe(requireActivity(),
-                    notes -> fragmentInit((ViewGroup) view, notes));
-        }
-    }
-
-    private void layoutInit(Context context, ViewGroup parent, List<Note> notes) {
-
-
-        for (Note note : notes) {
-            LinearLayout layout = new LinearLayout(context);
-
-            TextView nName = new TextView(context);
-            TextView nDate = new TextView(context);
-            nName.setText(note.getName());
-            nDate.setText(note.getNoteDate().toString());
-            nName.setTextAppearance(style.BigText);
-            nDate.setTextAppearance(style.MidText);
-//            nName.setBackgroundColor(note.getBackColor());
-//            nDate.setBackgroundColor(note.getBackColor());
-            layout.addView(nName);
-            layout.addView(nDate);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setOnClickListener(v -> showNote(v, note));
-//            layout.setBackground(Drawable.createFromPath("@drawable/frame_border"));
- //           layout.setBackgroundColor(note.getBackColor());
-            parent.addView(layout);
-//            Log.d(TAG, "Created " + note.getName());
+                    notes -> initRecyclerView(recyclerView,
+                            notes.stream().filter(note -> {
+                                return note.isInBasket() == inBasket && note.isArchived() == archived;
+                            }).collect(Collectors.toList())
+                            ,columns));
         }
 
     }
+
+    private void initRecyclerView(RecyclerView recyclerView, List<Note>notes, int columns){
+        if (columns == 1){
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(linearLayoutManager);
+
+        } else {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            recyclerView.setLayoutManager(gridLayoutManager);
+        }
+
+        NotesListAdapter notesListAdapter = new NotesListAdapter(notes);
+        recyclerView.setAdapter(notesListAdapter);
+
+        notesListAdapter.setItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+                showNote(view, position);
+            }
+
+            @Override
+            public void onItemClick(View view, Note note) {
+                showNote(view, note);
+            }
+        });
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
 
     private void fragmentInit(ViewGroup parent, List<Note> notes) {
         LayoutInflater layoutInflater = getLayoutInflater();
@@ -160,26 +160,26 @@ public class NotesFragment extends Fragment {
                 view.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
             }
 
-
-//            view.setBackgroundResource(drawable.frame_border);
             TextView nName = view.findViewById(id.edit_note_name);
             TextView nDate = view.findViewById(id.note_date);
             nName.setText(note.getName());
             nDate.setText(note.getNoteDate().toString());
-//            nName.setBackgroundColor(note.getBackColor());
-//            nDate.setBackgroundColor(note.getBackColor());
-
 
             view.setOnClickListener(v -> showNote(v, note));
-//            view.setBackgroundColor(note.getBackColor());
             parent.addView(view);
-//            Log.d(TAG, "Created " + note.getName());
         }
 
     }
 
     private boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    private void showNote(View view, int index) {
+        NotesViewModel model = new ViewModelProvider(requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+        Note note = model.getNote(index);
+        showNote(view, note);
     }
 
     private void showNote(View view, Note note) {
@@ -201,7 +201,7 @@ public class NotesFragment extends Fragment {
 
     private void showPortNode(View view, Note note) {
         NoteBodyFragment noteBodyFragment = NoteBodyFragment.newInstance(note);
-        View list_layout = requireActivity().findViewById(id.nested_scroll_view);
+        View list_layout = requireActivity().findViewById(id.fragment_container);
         list_layout.setVisibility(View.GONE);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -211,8 +211,12 @@ public class NotesFragment extends Fragment {
                 .commit();
     }
 
+
+
     public void fragmentInit() {
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         model.initNotes().observe(requireActivity(),
                     notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
     }

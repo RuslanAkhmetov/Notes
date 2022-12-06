@@ -104,12 +104,22 @@ public class NoteBodyEditFragment extends Fragment {
 
     private void initBodyEditFragment(View view) {
 
+        NotesViewModel model = new ViewModelProvider(getActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         Bundle arguments = getArguments();
         if (arguments != null) {
             note = arguments.getParcelable(NOTE);
-        }
+            if (note.isArchived() != MainActivity.isArchived()) {
+                if (model.getFirstArchived() != null)
+                    note = model.getFirstArchived();
+            } else if (note.isInBasket() != MainActivity.isInBasket()){
+                if (model.getFirstInBasket()!= null)
+                    note = model.getFirstInBasket();
+            } else {
+                note = model.getFirst();
+            }
 
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        }
 
         if (note == null && !addNew) {
             note =  model.getCurrentNote().copy();
@@ -117,9 +127,9 @@ public class NoteBodyEditFragment extends Fragment {
 
         try {
             if (note != null) {
-                if (note.getBackColor() != 0){
+/*                if (note.getBackColor() != 0){
                     view.setBackgroundColor(note.getBackColor());
-                }
+                }*/
                 EditText nameEditText = view.findViewById(R.id.edit_note_name);
                 EditText bodyEditText = view.findViewById(R.id.edit_note_body);
                 if (note.getBackColor() == 0){
@@ -193,7 +203,9 @@ public class NoteBodyEditFragment extends Fragment {
 
     public boolean onItemAction(@NonNull MenuItem item) {
         int id = item.getItemId();
-        NotesViewModel model = new ViewModelProvider(requireActivity()).get(NotesViewModel.class);
+        NotesViewModel model = new ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         switch (id) {
             case R.id.save_action:
                 Log.i(TAG, "onItemAction: ");

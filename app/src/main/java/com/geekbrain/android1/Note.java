@@ -9,16 +9,23 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Note implements Parcelable {
+
+    private String name;
+    private String body;
+    private LocalDate noteDate;
+    private int backColor;
+    private boolean inBasket;
+    private boolean archived;
+
+
     public Note() {
         this.uuid = UUID.randomUUID();
         this.name = "";
         this.body = "";
         this.noteDate = LocalDate.now();
         this.backColor = Color.parseColor("#FFFFFF");
-    }
-
-    public String getName() {
-        return name;
+        this.inBasket = true;
+        this.archived = true;
     }
 
     public Note(String name, String body, LocalDate noteDate, int backColor) {
@@ -27,13 +34,21 @@ public class Note implements Parcelable {
         this.body = body;
         this.noteDate = noteDate;
         this.backColor = backColor;
-
     }
 
-    private String name;
-    private String body;
-    private LocalDate noteDate;
-    private int backColor;
+    public Note(String name, String body, LocalDate noteDate, int backColor, boolean inBasket, boolean archived) {
+        this.uuid = UUID.randomUUID();
+        this.name = name;
+        this.body = body;
+        this.noteDate = noteDate;
+        this.backColor = backColor;
+        this.inBasket = inBasket;
+        this.archived = archived;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -69,6 +84,21 @@ public class Note implements Parcelable {
         this.backColor = backColor;
     }
 
+    public boolean isInBasket() {
+        return inBasket;
+    }
+
+    public void setInBasket(boolean inBasket) {
+        this.inBasket = inBasket;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
 
     @Override
     public int describeContents() {
@@ -82,21 +112,36 @@ public class Note implements Parcelable {
         parcel.writeString(getBody());
         parcel.writeSerializable(getNoteDate());
         parcel.writeInt(getBackColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            parcel.writeBoolean(isInBasket());
+            parcel.writeBoolean(isArchived());
+        } else {
+            parcel.writeInt(BooleanToInt(isInBasket()));
+            parcel.writeInt(BooleanToInt(isArchived()));
+        }
     }
 
-    protected Note(Parcel parcel){
+    protected Note(Parcel parcel) {
         uuid = (UUID) parcel.readSerializable();
         name = parcel.readString();
         body = parcel.readString();
         noteDate = (LocalDate) parcel.readSerializable();
         backColor = parcel.readInt();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            inBasket = parcel.readBoolean();
+            archived = parcel.readBoolean();
+        } else {
+            inBasket = IntToBoolean(parcel.readInt());
+            archived = IntToBoolean(parcel.readInt());
+        }
+
     }
 
-    public Note copy(){
-        return new Note(name, body, noteDate, backColor);
+    public Note copy() {
+        return new Note(name, body, noteDate, backColor, inBasket, archived);
     }
 
-    public static final Creator <Note> CREATOR  = new Creator<Note>() {
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
         @Override
         public Note createFromParcel(Parcel parcel) {
             return new Note(parcel);
@@ -107,4 +152,21 @@ public class Note implements Parcelable {
             return new Note[i];
         }
     };
+
+    private int BooleanToInt(boolean b) {
+        if (b)
+            return 1;
+        else
+            return 0;
+    }
+
+    private boolean IntToBoolean (int i){
+        if(i==1)
+            return true;
+        else if (i==0)
+            return false;
+        else
+            throw new IllegalArgumentException(String.format("Can't cast %d to boolean", i));
+    }
+
 }
