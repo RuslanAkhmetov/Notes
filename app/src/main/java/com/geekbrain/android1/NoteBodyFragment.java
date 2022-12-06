@@ -29,7 +29,7 @@ import java.util.UUID;
  * Use the {@link NoteBodyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NoteBodyFragment extends Fragment  {
+public class NoteBodyFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,7 +52,8 @@ public class NoteBodyFragment extends Fragment  {
             NotesViewModel model = new ViewModelProvider(getActivity(),
                     ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
             if (model.deleteNote(model.getCurrentNote()) >= 0) {
-                NotesFragment notesFragment = new NotesFragment();
+                NotesFragment notesFragment = NotesFragment.newInstance(
+                        MainActivity.getColumn(), MainActivity.isInBasket(), MainActivity.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -143,17 +144,26 @@ public class NoteBodyFragment extends Fragment  {
 
     private void initBodyFragment(@NonNull View view) {
         Bundle arguments = getArguments();
-        if (arguments != null) {
-            note = arguments.getParcelable(NOTE);
-        }
 
         NotesViewModel model = new ViewModelProvider(requireActivity(),
                 ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
-
+        if (arguments != null) {
+            note = arguments.getParcelable(NOTE);
+        }
         if (note == null) {
             note = model.getCurrentNote() == null ? model.getFirst()
                     : model.getCurrentNote();
         }
+        if (MainActivity.isInBasket() && !note.isInBasket() ) {
+            if (model.getFirstInBasket() != null) {
+                note = model.getFirstInBasket();
+            }
+        } else if (MainActivity.isArchived() && !note.isArchived()) {
+            if (model.getFirstArchived()!= null) {
+                note = model.getFirstArchived();
+            }
+        } else if (!MainActivity.isArchived() && !MainActivity.isInBasket() && (note.isInBasket() || note.isArchived()))
+            note = model.getFirst();
 
         try {
             if (note != null) {
@@ -206,66 +216,21 @@ public class NoteBodyFragment extends Fragment  {
 
                 return true;
             case R.id.delete_action:
-                //Toast.makeText(requireActivity(), getString(R.string.delete_note), Toast.LENGTH_SHORT).show();
-                /*NotesViewModel model = new ViewModelProvider(requireActivity(),
-                        ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);*/
-                boolean isDelete = true;
 
                 DialogFragment dialogFragment = new DialogFragment();
                 dialogFragment.setCallbacks(callbacks);
                 dialogFragment.setTargetFragment(this, REQUEST_CODE);
                 dialogFragment.show(requireActivity().getSupportFragmentManager(), CONFIRMATION);
-/*
-                new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.atention)
-                        .setMessage(R.string.are_you_sure)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-*/
-/*                                Snackbar confirmDeleteNote = Snackbar.make(requireActivity().findViewById(R.id.note_body_container)
-                                        , String.format(getString(R.string.delete_confirmation), model.getCurrentNote().getName())
-                                        , Snackbar.LENGTH_LONG);
-                                confirmDeleteNote.setAction(R.string.Undo, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        boolean isDelete = false;
-                                    }
-                                });
-                                confirmDeleteNote.show();*//*
 
-                                //isDelete = true;
-                                if (model.deleteNote(model.getCurrentNote()) >= 0) {
-                                    NotesFragment notesFragment = new NotesFragment();
-                                    requireActivity().getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.fragment_container, notesFragment)
-                                            .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
-                                            .commit();
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .show();
-*/
-
-/*                if (isDelete) {
-                    if (model.deleteNote(model.getCurrentNote()) >= 0) {
-                        NotesFragment notesFragment = new NotesFragment();
-                        requireActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_container, notesFragment)
-                                .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
-                                .commit();
-                    }
-                }*/
                 return true;
 
             case R.id.back_action:
 
                 View list_layout = requireActivity().findViewById(R.id.fragment_container);
                 list_layout.setVisibility(View.VISIBLE);
-                NotesFragment notesFragment = new NotesFragment();
+                NotesFragment notesFragment = NotesFragment.newInstance(MainActivity.getColumn()
+                        , MainActivity.isInBasket()
+                        , MainActivity.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -278,8 +243,6 @@ public class NoteBodyFragment extends Fragment  {
         }
 //        return false;
     }
-
-
 
 
     private void showPalette() {

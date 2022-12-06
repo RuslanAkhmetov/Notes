@@ -97,12 +97,30 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
         return null;
     }
 
+    @Override
     public Note getFirst() {
         if (notes == null || notes.getValue().size() == 0)
             throw new NullPointerException("Note is not initialized or empty");
         currentNote = notes.getValue().get(0);
         return currentNote;
     }
+
+    @Override
+    public Note getFirstInBasket() {
+        if (notes == null || notes.getValue().size() == 0)
+            throw new NullPointerException("Note is not initialized or empty");
+        currentNote = notes.getValue().stream().filter(note -> note.isInBasket() == true).findFirst().get();
+        return currentNote;
+    }
+
+    @Override
+    public Note getFirstArchived() {
+        if (notes == null || notes.getValue().size() == 0)
+            throw new NullPointerException("Note is not initialized or empty");
+        currentNote = notes.getValue().stream().filter(note -> note.isArchived() == true).findFirst().get();
+        return currentNote;
+    }
+
 
     private void init(){
         List<Note> list = new ArrayList<>();
@@ -131,16 +149,61 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             return -1;
         if (note != null) {
             int removeIndex = list.indexOf(note);
+            notes.getValue().get(removeIndex).setInBasket(true);
             if (removeIndex == list.size()-1) {
-                notes.getValue().remove(note);
-                setCurrentNote(list.get(list.size()-1));
-                return list.size()-1;
+                setCurrentNote(list.get(removeIndex-1));
+                return removeIndex-1;
             } else {
-                notes.getValue().remove(note);
-                setCurrentNote(list.get(removeIndex));
-                return removeIndex;
+                setCurrentNote(list.get(removeIndex+1));
+                return removeIndex + 1;
             }
         }
+        } catch (Exception e){
+            Log.i(TAG, "deleteNote: impossible");
+        }
+        return -1;
+    }
+
+    @Override
+    public int archivenode(Note note) {
+        try{
+            List<Note> list = notes.getValue();
+            if (list.size()==1)
+                return -1;
+            if (note != null) {
+                int removeIndex = list.indexOf(note);
+                notes.getValue().get(removeIndex).setArchived(true);
+                if (removeIndex == list.size()-1) {
+                    setCurrentNote(list.get(removeIndex-1));
+                    return removeIndex-1;
+                } else {
+                    setCurrentNote(list.get(removeIndex+1));
+                    return removeIndex + 1;
+                }
+            }
+        } catch (Exception e){
+            Log.i(TAG, "archiveNote: impossible");
+        }
+        return -1;
+    }
+
+    @Override
+    public int finalDelete(Note note) {
+        try{
+            List<Note> list = notes.getValue();
+            if (list.size()==1)
+                return -1;
+            if (note != null) {
+                int removeIndex = list.indexOf(note);
+                notes.getValue().remove(removeIndex);
+                if (removeIndex == list.size()-1) {
+                    setCurrentNote(list.get(removeIndex-1));
+                    return removeIndex-1;
+                } else {
+                    setCurrentNote(list.get(removeIndex));
+                    return removeIndex;
+                }
+            }
         } catch (Exception e){
             Log.i(TAG, "deleteNote: impossible");
         }

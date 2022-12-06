@@ -16,7 +16,7 @@ import com.geekbrain.android1.R;
 import java.util.List;
 
 
-public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.ViewHolder> implements OnItemClickListener {
+public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.ViewHolder>  {
 
     private List<Note> list;
 
@@ -63,7 +63,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
             holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
         }
 
-
     }
 
     @Override
@@ -72,11 +71,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
     }
 
 
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView nameText;
         private TextView bodyText;
         private TextView dateText;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,8 +87,9 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
+                    Note currentNote = list.get(position);
                     if (itemClickListener!=null) {
-                        itemClickListener.onItemClick(view, position);
+                        itemClickListener.onItemClick(view, currentNote);
                     }
                 }
             });
@@ -106,10 +107,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
             return dateText;
         }
 
-
     }
-
-
 
 
 }

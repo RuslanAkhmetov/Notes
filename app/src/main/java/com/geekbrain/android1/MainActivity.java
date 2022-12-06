@@ -22,11 +22,32 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main_Activity";
 
+    private static int column = 1;
+    private static boolean inBasket = false;
+    private static boolean archived    = false;
+
+
+    public static boolean isInBasket() {
+        return inBasket;
+    }
+    public static void setInBasket(boolean inBasket) {
+        MainActivity.inBasket = inBasket;
+    }
+    public static boolean isArchived() {
+        return archived;
+    }
+    public static void setArchived(boolean archived) {
+        MainActivity.archived = archived;
+    }
+    public static void setColumn(int column) {
+        if (column != 1)
+            MainActivity.column = 2;
+        else
+            MainActivity.column = 1;
+    }
     public static int getColumn() {
         return column;
     }
-
-    private static int column = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
 
-        NotesFragment notesFragment = NotesFragment.newInstance(column);
+        NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
+
         setSupportActionBar(findViewById(R.id.toolbar));
 
         initToolBarDrawer();
@@ -43,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         if (savedInstanceState == null) {
+
             fragmentTransaction
                     .add(R.id.fragment_container, notesFragment)
                     .add(R.id.note_body_container, NoteBodyFragment.newInstance());
@@ -53,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
         }
         fragmentTransaction.commit();
-//
     }
 
     @Override
@@ -70,21 +92,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.search_action, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.cozy_view_action:
-                column = column == 1 ? 2 : 1;
+                setColumn(getColumn() == 1 ? 2 : 1);
                 if (column == 1) {
                     Toast.makeText(this, R.string.linear_view, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, R.string.cozy_view, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.two_columns, Toast.LENGTH_SHORT).show();
                 }
-                NotesFragment notesFragment = NotesFragment.newInstance(column);
+                NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
                 setSupportActionBar(findViewById(R.id.toolbar));
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction
                         .replace(R.id.fragment_container, notesFragment)
                         .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
                 fragmentTransaction.commit();
-
-
                 return true;
             default:
                 return false;
@@ -115,13 +135,27 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             switch (id) {
                 case R.id.drawer_notes:
-
+                    setArchived(false);
+                    setInBasket(false);
+                    drawerLayout.close();
+                    //TODO UI update
+                    return true;
                 case R.id.drawer_notification:
                     drawerLayout.close();
                     return true;
                 case R.id.drawer_SETTINGS:
                     openSettingFragment();
                     drawerLayout.close();
+                    return true;
+                case R.id.drawer_basket:
+                    setInBasket(true);
+                    drawerLayout.close();
+                    //TODO UI update
+                    return true;
+                case R.id.drawer_archive:
+                    setArchived(true);
+                    drawerLayout.close();
+                    //TODO UI update
                     return true;
                 default:
                     return false;
@@ -131,6 +165,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+    }
 
     private void openSettingFragment() {
         getSupportFragmentManager()

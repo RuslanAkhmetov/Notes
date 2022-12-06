@@ -104,13 +104,22 @@ public class NoteBodyEditFragment extends Fragment {
 
     private void initBodyEditFragment(View view) {
 
+        NotesViewModel model = new ViewModelProvider(getActivity(),
+                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         Bundle arguments = getArguments();
         if (arguments != null) {
             note = arguments.getParcelable(NOTE);
-        }
+            if (note.isArchived() != MainActivity.isArchived()) {
+                if (model.getFirstArchived() != null)
+                    note = model.getFirstArchived();
+            } else if (note.isInBasket() != MainActivity.isInBasket()){
+                if (model.getFirstInBasket()!= null)
+                    note = model.getFirstInBasket();
+            } else {
+                note = model.getFirst();
+            }
 
-        NotesViewModel model = new ViewModelProvider(requireActivity(),
-                ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+        }
 
         if (note == null && !addNew) {
             note =  model.getCurrentNote().copy();
