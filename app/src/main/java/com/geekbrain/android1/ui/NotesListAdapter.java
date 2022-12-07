@@ -70,9 +70,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
         return list.size();
     }
 
-
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView nameText;
         private TextView bodyText;

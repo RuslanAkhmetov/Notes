@@ -133,6 +133,16 @@ public class NoteBodyFragment extends Fragment {
         initBodyFragment(view);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
+        if (MainActivity.isArchived() || MainActivity.isInBasket()) {
+            bottomNavigationView.findViewById(R.id.edit_action).setVisibility(View.GONE);
+            bottomNavigationView.findViewById(R.id.restore_action).setVisibility(View.VISIBLE);
+        } else {
+            bottomNavigationView.findViewById(R.id.edit_action).setVisibility(View.VISIBLE);
+            bottomNavigationView.findViewById(R.id.restore_action).setVisibility(View.GONE);
+        }
+        if (MainActivity.isArchived()) {
+            bottomNavigationView.findViewById(R.id.archive_action).setVisibility(View.GONE);
+        }
         bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
 
     }
@@ -213,8 +223,19 @@ public class NoteBodyFragment extends Fragment {
                         .beginTransaction()
                         .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(false, note.copy()))
                         .commit();
-
+            case R.id.restore_action:
+                if (note.isArchived()){
+                    note.setArchived(false);
+                } else if (note.isInBasket()){
+                    note.setInBasket(false);
+                }
                 return true;
+
+            case R.id.archive_action:
+                note.setArchived(true);
+                note.setInBasket(false);
+                return true;
+
             case R.id.delete_action:
 
                 DialogFragment dialogFragment = new DialogFragment();

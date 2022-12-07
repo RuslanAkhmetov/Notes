@@ -6,12 +6,14 @@ import static com.geekbrain.android1.R.array.descriptions;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import com.geekbrain.android1.MainActivity;
 import com.geekbrain.android1.Note;
 import com.geekbrain.android1.NotesApplication;
 import com.geekbrain.android1.R;
@@ -22,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     private static final String TAG = "ViewModel";
@@ -107,17 +110,23 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public Note getFirstInBasket() {
-        if (notes == null || notes.getValue().size() == 0)
-            throw new NullPointerException("Note is not initialized or empty");
-        currentNote = notes.getValue().stream().filter(note -> note.isInBasket() == true).findFirst().get();
+        if (notes == null || notes.getValue().stream().filter(note -> note.isInBasket()).collect(Collectors.toList()).size() == 0){
+            MainActivity.setInBasket(false);
+            return new Note();
+            //throw new NullPointerException("Note is not initialized or empty");
+        }
+        currentNote = notes.getValue().stream().filter(note -> note.isInBasket()).findFirst().get();
         return currentNote;
     }
 
     @Override
     public Note getFirstArchived() {
-        if (notes == null || notes.getValue().size() == 0)
-            throw new NullPointerException("Note is not initialized or empty");
-        currentNote = notes.getValue().stream().filter(note -> note.isArchived() == true).findFirst().get();
+        if (notes == null || notes.getValue().stream().filter(note -> note.isArchived()).collect(Collectors.toList()).size() == 0){
+            MainActivity.setArchived(false);
+            return new Note();
+            //throw new NullPointerException("Note is not initialized or empty");
+        }
+        currentNote = notes.getValue().stream().filter(note -> note.isArchived() ).findFirst().get();
         return currentNote;
     }
 

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
@@ -21,11 +22,11 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main_Activity";
+    private static final String NOTES_FRAGMENT = "NotesFragment";
 
     private static int column = 1;
     private static boolean inBasket = false;
     private static boolean archived    = false;
-
 
     public static boolean isInBasket() {
         return inBasket;
@@ -55,11 +56,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
-
         NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
-
         setSupportActionBar(findViewById(R.id.toolbar));
-
         initToolBarDrawer();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -67,12 +65,12 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
 
             fragmentTransaction
-                    .add(R.id.fragment_container, notesFragment)
+                    .add(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)
                     .add(R.id.note_body_container, NoteBodyFragment.newInstance());
         } else {
             Log.i(TAG, "On Create");
             fragmentTransaction
-                    .replace(R.id.fragment_container, notesFragment)
+                    .replace(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)
                     .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
         }
         fragmentTransaction.commit();
@@ -83,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -102,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 setSupportActionBar(findViewById(R.id.toolbar));
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction
-                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)
                         .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
                 fragmentTransaction.commit();
                 return true;
@@ -149,7 +146,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.drawer_basket:
                     setInBasket(true);
+
                     drawerLayout.close();
+
                     //TODO UI update
                     return true;
                 case R.id.drawer_archive:
