@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.geekbrain.android1.Note;
@@ -22,6 +23,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
 
     private OnItemClickListener itemClickListener;
 
+    private final Fragment fragment;
+
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
@@ -32,8 +35,9 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
         return list;
     }
 
-    public NotesListAdapter(List<Note> list) {
+    public NotesListAdapter(List<Note> list, Fragment fragment) {
         this.list = list;
+        this.fragment = fragment;
     }
 
     public void setList(List<Note> list) {
@@ -70,9 +74,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
         return list.size();
     }
 
-
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView nameText;
         private TextView bodyText;
@@ -83,6 +84,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
             nameText = itemView.findViewById(R.id.note_name);
             dateText = itemView.findViewById(R.id.note_date);
             bodyText = itemView.findViewById(R.id.note_body);
+            if (fragment!=null){
+                fragment.registerForContextMenu(itemView);
+            }
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -3,6 +3,7 @@ package com.geekbrain.android1;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -133,6 +134,16 @@ public class NoteBodyFragment extends Fragment {
         initBodyFragment(view);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
+        if (MainActivity.isArchived() || MainActivity.isInBasket()) {
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_restore_page_24);
+            bottomNavigationView.getMenu().getItem(1).setTitle(R.string.restore_note);
+        } else {
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_edit_24);
+            bottomNavigationView.getMenu().getItem(1).setTitle(R.string.edit_note);
+        }
+        if (MainActivity.isArchived()) {
+            bottomNavigationView.getMenu().getItem(2).setVisible(false);
+        }
         bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
 
     }
@@ -205,16 +216,28 @@ public class NoteBodyFragment extends Fragment {
                         .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(true, new Note()))
                         .commit();
                 return true;
-            case R.id.edit_action:
-                Log.i(TAG, "onOptionsItemSelected: edit.");
-                Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
-                        .show();
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(false, note.copy()))
-                        .commit();
+            case R.id.edit_restore_action:
 
+                Log.i(TAG, "onOptionsItemSelected: edit.");
+                if (!note.isInBasket() && !note.isArchived()) {
+                    Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
+                            .show();
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(false, note.copy()))
+                            .commit();
+                } else if (note.isArchived()){
+                    note.setArchived(false);
+                } else if (note.isInBasket()){
+                    note.setInBasket(false);
+                }
                 return true;
+
+            case R.id.archive_action:
+                note.setArchived(true);
+                note.setInBasket(false);
+                return true;
+
             case R.id.delete_action:
 
                 DialogFragment dialogFragment = new DialogFragment();

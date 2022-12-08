@@ -44,9 +44,7 @@ public class DialogFragment extends androidx.fragment.app.DialogFragment {
 
     public static DialogFragment newInstance(Callbacks callback) {
         DialogFragment fragment = new DialogFragment();
-/*        Bundle args = new Bundle();
-        args.putSerializable(ARG_CALLBACK, callback);
-        fragment.setArguments(args);*/
+
         return fragment;
     }
 

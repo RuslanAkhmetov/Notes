@@ -244,6 +244,8 @@
 
     <string name="no_such_index">\"There is no notes (%d) \"</string>
     <string name="linear_view">Линейный вид</string>
-    <string name="two_columns">Cozy view</string>
+    <string name="two_columns">Две колонки</string>
+    <string name="restore_note">Восстановить</string>
+    <string name="archive_note">Архивировать</string>
 
 </resources>

@@ -17,28 +17,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.geekbrain.android1.ui.DatePickerDialogFragment;
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.time.LocalDate;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link NoteBodyEditFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NoteBodyEditFragment extends Fragment {
+public class NoteBodyEditFragment extends Fragment implements DatePickerDialogFragment.CallbacksDate {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ADD_NEW = "add_new";
     private static final String TAG = "Note_Body_Edit";
-    private static final String NOTE = "Note_Body_Edit_Mote";
+    private static final String NOTE = "Note_Body_Edit_Note";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
+
 
     // TODO: Rename and change types of parameters
     private boolean addNew;
-    private String mParam2;
     private Note note;
 
 
@@ -49,26 +54,12 @@ public class NoteBodyEditFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoteBodyEditFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NoteBodyEditFragment newInstance(boolean param1, String param2, Note note) {
-        NoteBodyEditFragment fragment = new NoteBodyEditFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        args.putParcelable(NOTE, note);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public static NoteBodyEditFragment newInstance(boolean addNote, Note note) {
         NoteBodyEditFragment fragment = new NoteBodyEditFragment();
         Bundle args = new Bundle();
-        args.putBoolean(ARG_PARAM1, addNote);
+        args.putBoolean(ADD_NEW, addNote);
         args.putParcelable(NOTE, note);
         fragment.setArguments(args);
         return fragment;
@@ -78,8 +69,7 @@ public class NoteBodyEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            addNew = getArguments().getBoolean(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            addNew = getArguments().getBoolean(ADD_NEW);
             note = getArguments().getParcelable(NOTE);
         }
     }
@@ -99,7 +89,7 @@ public class NoteBodyEditFragment extends Fragment {
         initBodyEditFragment(view);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_edit_navigation_menu);
-        bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
+        bottomNavigationView.setOnItemSelectedListener(this::onItemAction);
     }
 
     private void initBodyEditFragment(View view) {
@@ -109,32 +99,37 @@ public class NoteBodyEditFragment extends Fragment {
         Bundle arguments = getArguments();
         if (arguments != null) {
             note = arguments.getParcelable(NOTE);
-            if (note.isArchived() != MainActivity.isArchived()) {
+            /*if (note.isArchived() != MainActivity.isArchived()) {
                 if (model.getFirstArchived() != null)
                     note = model.getFirstArchived();
             } else if (note.isInBasket() != MainActivity.isInBasket()){
                 if (model.getFirstInBasket()!= null)
                     note = model.getFirstInBasket();
-            } else {
+            }*/ /*else {
                 note = model.getFirst();
-            }
+            }*/
 
         }
 
         if (note == null && !addNew) {
-            note =  model.getCurrentNote().copy();
+            note = model.getCurrentNote().copy();
         }
 
         try {
             if (note != null) {
-/*                if (note.getBackColor() != 0){
-                    view.setBackgroundColor(note.getBackColor());
-                }*/
+
                 EditText nameEditText = view.findViewById(R.id.edit_note_name);
                 EditText bodyEditText = view.findViewById(R.id.edit_note_body);
-                if (note.getBackColor() == 0){
+                TextView nameDateText = view.findViewById(R.id.edit_note_date);
+                nameDateText.setOnClickListener(v -> {
+                    DatePickerDialogFragment datePickerDialog = new DatePickerDialogFragment(note.getNoteDate());
+                    datePickerDialog.setTargetFragment(this, REQUEST_DATE);
+                    datePickerDialog.show(requireActivity().getSupportFragmentManager(), DIALOG_DATE);
+                });
+
+                if (note.getBackColor() == 0) {
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
-                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null))  {
+                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_teal_700));
                 } else if (note.getBackColor() == getResources().getColor(R.color.purple_200, null)) {
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
@@ -142,7 +137,7 @@ public class NoteBodyEditFragment extends Fragment {
                 ImageButton buttonPurple = view.findViewById(R.id.button_palette_purple);
                 ImageButton buttonTeal = view.findViewById(R.id.button_palette_teal);
 
-                buttonTeal.setOnClickListener(v ->{
+                buttonTeal.setOnClickListener(v -> {
                     int color = getResources().getColor(R.color.teal_700, null);
                     note.setBackColor(color);
                     requireActivity().findViewById(R.id.note_body_edit_container)
@@ -151,7 +146,7 @@ public class NoteBodyEditFragment extends Fragment {
 //                    initBodyEditFragment(requireActivity().findViewById(R.id.note_body_edit_container));
                 });
 
-                buttonPurple.setOnClickListener(v ->{
+                buttonPurple.setOnClickListener(v -> {
                     int color = getResources().getColor(R.color.purple_200, null);
                     note.setBackColor(color);
                     requireActivity().findViewById(R.id.note_body_edit_container)
@@ -162,6 +157,7 @@ public class NoteBodyEditFragment extends Fragment {
 
                 nameEditText.setText(note.getName());
                 bodyEditText.setText(note.getBody());
+                nameDateText.setText(note.getNoteDate().toString());
 
                 nameEditText.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -170,7 +166,7 @@ public class NoteBodyEditFragment extends Fragment {
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            note.setName(s.toString());
+                        note.setName(s.toString());
                     }
 
                     @Override
@@ -209,14 +205,17 @@ public class NoteBodyEditFragment extends Fragment {
         switch (id) {
             case R.id.save_action:
                 Log.i(TAG, "onItemAction: ");
-                if(addNew){
-                   if(model.addNote(note) > 0){
-                       Toast.makeText(requireActivity(),getString(R.string.success_add), Toast.LENGTH_SHORT).show();
-                   }
+                if (addNew) {
+                    note.setArchived(false);
+                    note.setInBasket(false);
+                    Log.i(TAG, "onItemAction: note name" + note.getName());
+                    if (model.addNote(note) > 0) {
+                        Toast.makeText(requireActivity(), getString(R.string.success_add), Toast.LENGTH_SHORT).show();
+                    }
                 } else if (model.editCurrentNote(note) >= 0) {
-                    Toast.makeText(requireActivity(),getString(R.string.success_save), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), getString(R.string.success_save), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(requireActivity(),getString(R.string.unsuccess_save), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), getString(R.string.unsuccess_save), Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -233,5 +232,14 @@ public class NoteBodyEditFragment extends Fragment {
                 return false;
         }
         return false;
+    }
+
+    @Override
+    public void onDateSelected(LocalDate date) {
+        Log.i(TAG, "onDateSelected: "+ date.toString());
+        note.setNoteDate(date);
+        TextView dateText = requireActivity().findViewById(R.id.edit_note_date);
+        dateText.setText(date.toString());
+
     }
 }
