@@ -248,6 +248,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public int addNote(Note note) {
+        Log.i(TAG, "before addNote: " + notes.getValue().size());
         try {
             if (addNewToTheEnd) {
                 notes.getValue().add(note);
@@ -255,6 +256,8 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
                 notes.getValue().add(0, note);
             }
             currentNote = note;
+            Log.i(TAG, "after addNote: " + notes.getValue().indexOf(currentNote));
+
             return notes.getValue().indexOf(currentNote);
         } catch (Exception e) {
             Log.i(TAG, "addNote: " + e.getMessage());

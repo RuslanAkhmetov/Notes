@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.geekbrain.android1.ui.DatePickerDialog;
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,14 +33,14 @@ public class NoteBodyEditFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ADD_NEW = "add_new";
     private static final String TAG = "Note_Body_Edit";
-    private static final String NOTE = "Note_Body_Edit_Mote";
+    private static final String NOTE = "Note_Body_Edit_Note";
+    private static final String DIALOG_DATE = "DialogDate";
+
 
     // TODO: Rename and change types of parameters
     private boolean addNew;
-    private String mParam2;
     private Note note;
 
 
@@ -49,26 +51,14 @@ public class NoteBodyEditFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoteBodyEditFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NoteBodyEditFragment newInstance(boolean param1, String param2, Note note) {
-        NoteBodyEditFragment fragment = new NoteBodyEditFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        args.putParcelable(NOTE, note);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     public static NoteBodyEditFragment newInstance(boolean addNote, Note note) {
         NoteBodyEditFragment fragment = new NoteBodyEditFragment();
         Bundle args = new Bundle();
-        args.putBoolean(ARG_PARAM1, addNote);
+        args.putBoolean(ADD_NEW, addNote);
         args.putParcelable(NOTE, note);
         fragment.setArguments(args);
         return fragment;
@@ -78,8 +68,7 @@ public class NoteBodyEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            addNew = getArguments().getBoolean(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            addNew = getArguments().getBoolean(ADD_NEW);
             note = getArguments().getParcelable(NOTE);
         }
     }
@@ -99,7 +88,7 @@ public class NoteBodyEditFragment extends Fragment {
         initBodyEditFragment(view);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_edit_navigation_menu);
-        bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
+        bottomNavigationView.setOnItemSelectedListener(this::onItemAction);
     }
 
     private void initBodyEditFragment(View view) {
@@ -109,15 +98,15 @@ public class NoteBodyEditFragment extends Fragment {
         Bundle arguments = getArguments();
         if (arguments != null) {
             note = arguments.getParcelable(NOTE);
-            if (note.isArchived() != MainActivity.isArchived()) {
+            /*if (note.isArchived() != MainActivity.isArchived()) {
                 if (model.getFirstArchived() != null)
                     note = model.getFirstArchived();
             } else if (note.isInBasket() != MainActivity.isInBasket()){
                 if (model.getFirstInBasket()!= null)
                     note = model.getFirstInBasket();
-            } else {
+            }*/ /*else {
                 note = model.getFirst();
-            }
+            }*/
 
         }
 
@@ -132,6 +121,10 @@ public class NoteBodyEditFragment extends Fragment {
                 }*/
                 EditText nameEditText = view.findViewById(R.id.edit_note_name);
                 EditText bodyEditText = view.findViewById(R.id.edit_note_body);
+                TextView nameDateText = view.findViewById(R.id.note_date);
+                nameDateText.setOnClickListener(v -> new DatePickerDialog(note.getNoteDate()).
+                        show(requireActivity().getSupportFragmentManager(), DIALOG_DATE));
+
                 if (note.getBackColor() == 0){
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
                 } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null))  {
@@ -210,6 +203,9 @@ public class NoteBodyEditFragment extends Fragment {
             case R.id.save_action:
                 Log.i(TAG, "onItemAction: ");
                 if(addNew){
+                    note.setArchived(false);
+                    note.setInBasket(false);
+                    Log.i(TAG, "onItemAction: note name" + note.getName());
                    if(model.addNote(note) > 0){
                        Toast.makeText(requireActivity(),getString(R.string.success_add), Toast.LENGTH_SHORT).show();
                    }

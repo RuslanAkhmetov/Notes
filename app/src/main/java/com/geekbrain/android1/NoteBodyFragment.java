@@ -3,6 +3,7 @@ package com.geekbrain.android1;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -134,14 +135,14 @@ public class NoteBodyFragment extends Fragment {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
         if (MainActivity.isArchived() || MainActivity.isInBasket()) {
-            bottomNavigationView.findViewById(R.id.edit_action).setVisibility(View.GONE);
-            bottomNavigationView.findViewById(R.id.restore_action).setVisibility(View.VISIBLE);
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_restore_page_24);
+            bottomNavigationView.getMenu().getItem(1).setTitle(R.string.restore_note);
         } else {
-            bottomNavigationView.findViewById(R.id.edit_action).setVisibility(View.VISIBLE);
-            bottomNavigationView.findViewById(R.id.restore_action).setVisibility(View.GONE);
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_edit_24);
+            bottomNavigationView.getMenu().getItem(1).setTitle(R.string.edit_note);
         }
         if (MainActivity.isArchived()) {
-            bottomNavigationView.findViewById(R.id.archive_action).setVisibility(View.GONE);
+            bottomNavigationView.getMenu().getItem(2).setVisible(false);
         }
         bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
 
@@ -215,16 +216,17 @@ public class NoteBodyFragment extends Fragment {
                         .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(true, new Note()))
                         .commit();
                 return true;
-            case R.id.edit_action:
+            case R.id.edit_restore_action:
+
                 Log.i(TAG, "onOptionsItemSelected: edit.");
-                Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
-                        .show();
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(false, note.copy()))
-                        .commit();
-            case R.id.restore_action:
-                if (note.isArchived()){
+                if (!note.isInBasket() && !note.isArchived()) {
+                    Toast.makeText(requireActivity(), getString(R.string.edit_note), Toast.LENGTH_SHORT)
+                            .show();
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(false, note.copy()))
+                            .commit();
+                } else if (note.isArchived()){
                     note.setArchived(false);
                 } else if (note.isInBasket()){
                     note.setInBasket(false);

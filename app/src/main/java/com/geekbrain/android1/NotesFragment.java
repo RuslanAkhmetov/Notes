@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -39,16 +41,37 @@ import java.util.stream.Collectors;
 
 public class NotesFragment extends Fragment {
     private final String TAG = "Notes_Fragment";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String Q_COLUMNS = "qColumns";
     private static final String IN_BASKET = "ib_basket";
     private static final String ARCHIVED = "archived";
 
-    // TODO: Rename and change types of parameters
     private int columns = 1;
     private boolean inBasket;
     private boolean archived;
+    private static final String CONFIRMATION = "Confirm_Dialog";
+    private static final int REQUEST_CODE = 0;
+
+    private Callbacks callbacks = new Callbacks() {
+        @Override
+        public void OnPositiveButtonClicked() {
+            NotesViewModel model = new ViewModelProvider(getActivity(),
+                    ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
+            if (model.deleteNote(model.getCurrentNote()) >= 0) {
+                NotesFragment notesFragment = NotesFragment.newInstance(
+                        MainActivity.getColumn(), MainActivity.isInBasket(), MainActivity.isArchived());
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, notesFragment)
+                        .replace(R.id.note_body_container, NoteBodyFragment.newInstance(model.getCurrentNote()))
+                        .commit();
+            }
+        }
+
+        @Override
+        public void OnNegativeButtonClicked() {
+
+        }
+    };
 
     public NotesFragment() {
         // Required empty public constructor
@@ -89,6 +112,7 @@ public class NotesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        setHasOptionsMenu(true);
         return inflater.inflate(layout.recycler_list_fragment, container, false);
     }
 
@@ -106,13 +130,13 @@ public class NotesFragment extends Fragment {
                             notes.stream().filter(note -> {
                                 return note.isInBasket() == inBasket && note.isArchived() == archived;
                             }).collect(Collectors.toList())
-                            ,columns));
+                            , columns));
         }
 
     }
 
-    private void initRecyclerView(RecyclerView recyclerView, List<Note>notes, int columns){
-        if (columns == 1){
+    private void initRecyclerView(RecyclerView recyclerView, List<Note> notes, int columns) {
+        if (columns == 1) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -121,13 +145,12 @@ public class NotesFragment extends Fragment {
             recyclerView.setLayoutManager(gridLayoutManager);
         }
 
-        NotesListAdapter notesListAdapter = new NotesListAdapter(notes);
+        NotesListAdapter notesListAdapter = new NotesListAdapter(notes, this);
         recyclerView.setAdapter(notesListAdapter);
 
         notesListAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
                 showNote(view, position);
             }
 
@@ -138,13 +161,36 @@ public class NotesFragment extends Fragment {
         });
     }
 
-
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
 
+        super.onCreateContextMenu(menu, v, menuInfo);
+        requireActivity().getMenuInflater().inflate(R.menu.card_menu, menu);
     }
 
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case id.action_add:
+                if (!isLandscape()) {
+                    View list_layout = requireActivity().findViewById(id.fragment_container);
+                    list_layout.setVisibility(View.GONE);
+                }
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.note_body_container, NoteBodyEditFragment.newInstance(true, new Note()))
+                        .commit();
+                return true;
+            case id.action_clear:
+                DialogFragment dialogFragment = new DialogFragment();
+                dialogFragment.setCallbacks(callbacks);
+                dialogFragment.setTargetFragment(this, REQUEST_CODE);
+                dialogFragment.show(requireActivity().getSupportFragmentManager(), CONFIRMATION);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void fragmentInit(ViewGroup parent, List<Note> notes) {
         LayoutInflater layoutInflater = getLayoutInflater();
@@ -154,7 +200,7 @@ public class NotesFragment extends Fragment {
             if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
                 Log.i(TAG, "fragmentInit: note.getBackColor()");
                 view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_teal_700));
-            } else if  (note.getBackColor() == getResources().getColor(color.purple_200, null)) {
+            } else if (note.getBackColor() == getResources().getColor(color.purple_200, null)) {
                 view.setBackground(ContextCompat.getDrawable(requireActivity(), drawable.frame_border_purple_200));
             } else {
                 view.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border)); // Drawable.createFromPath("@drawable/frame_border"));
@@ -211,13 +257,13 @@ public class NotesFragment extends Fragment {
                 .commit();
     }
 
-
-
     public void fragmentInit() {
         NotesViewModel model = new ViewModelProvider(
                 requireActivity(),
                 ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         model.initNotes().observe(requireActivity(),
-                    notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
+                notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
     }
+
+
 }

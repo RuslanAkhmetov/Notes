@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/drawer_notes"
-        android:icon="@drawable/ic_baseline_lightbulb_24"
-        android:title="@string/notes_drawer_action" />
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_notes"
+            android:icon="@drawable/ic_baseline_lightbulb_24"
+            android:title="@string/notes_drawer_action" />
 
-    <item
-        android:id="@+id/drawer_notification"
-        android:icon="@drawable/ic_baseline_notifications_none_24"
-        android:title="@string/notification_drawer_action" />
+        <item
+            android:id="@+id/drawer_notification"
+            android:icon="@drawable/ic_baseline_notifications_none_24"
+            android:title="@string/notification_drawer_action" />
 
-    <item
-        android:id="@+id/drawer_archive"
-        android:icon="@drawable/ic_baseline_archive_24"
-        android:title="@string/archive_drawer_action" />
+        <item
+            android:id="@+id/drawer_archive"
+            android:icon="@drawable/ic_baseline_archive_24"
+            android:title="@string/archive_drawer_action" />
 
-    <item
-        android:id="@+id/drawer_basket"
-        android:icon="@drawable/ic_baseline_delete_outline_24"
-        android:title="@string/basket_drawer_action" />
+        <item
+            android:id="@+id/drawer_basket"
+            android:icon="@drawable/ic_baseline_delete_outline_24"
+            android:title="@string/basket_drawer_action" />
+    </group>
 
     <item
         android:id="@+id/drawer_SETTINGS"
         android:icon="@drawable/ic_baseline_settings_24"
-        android:title="@string/settings_drawer_action"/>
+        android:title="@string/settings_drawer_action" />
 
     <item
         android:id="@+id/drawer_help"
         android:icon="@drawable/ic_baseline_help_outline_24"
-        android:title="@string/help_feedback"/>
+        android:title="@string/help_feedback" />
 
 </menu>

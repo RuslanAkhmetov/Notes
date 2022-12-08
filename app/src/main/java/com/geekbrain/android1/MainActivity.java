@@ -26,26 +26,31 @@ public class MainActivity extends AppCompatActivity {
 
     private static int column = 1;
     private static boolean inBasket = false;
-    private static boolean archived    = false;
+    private static boolean archived = false;
 
     public static boolean isInBasket() {
         return inBasket;
     }
+
     public static void setInBasket(boolean inBasket) {
         MainActivity.inBasket = inBasket;
     }
+
     public static boolean isArchived() {
         return archived;
     }
+
     public static void setArchived(boolean archived) {
         MainActivity.archived = archived;
     }
+
     public static void setColumn(int column) {
         if (column != 1)
             MainActivity.column = 2;
         else
             MainActivity.column = 1;
     }
+
     public static int getColumn() {
         return column;
     }
@@ -54,16 +59,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
-        NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, archived);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        initToolBarDrawer();
+        setSupportActionBar(toolbar);
+        initDrawer(toolbar);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         if (savedInstanceState == null) {
-
             fragmentTransaction
                     .add(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)
                     .add(R.id.note_body_container, NoteBodyFragment.newInstance());
@@ -109,11 +113,6 @@ public class MainActivity extends AppCompatActivity {
         //return super.onOptionsItemSelected(item);
     }
 
-    private void initToolBarDrawer() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        initDrawer(toolbar);
-    }
 
     private void initDrawer(Toolbar toolbar) {
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -127,40 +126,56 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
-
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             switch (id) {
                 case R.id.drawer_notes:
+                    item.setChecked(true);
                     setArchived(false);
                     setInBasket(false);
-                    drawerLayout.close();
-                    //TODO UI update
-                    return true;
+                    break;
+
                 case R.id.drawer_notification:
-                    drawerLayout.close();
-                    return true;
+                    item.setChecked(true);
+                    setArchived(false);
+                    setInBasket(false);
+                    break;
+
+                case R.id.drawer_basket:
+                    item.setChecked(true);
+                    setInBasket(true);
+                    setArchived(false);
+                    break;
+
+                case R.id.drawer_archive:
+                    item.setChecked(true);
+                    setArchived(true);
+                    setInBasket(false);
+//                    return true;
+                    break;
+
                 case R.id.drawer_SETTINGS:
                     openSettingFragment();
                     drawerLayout.close();
                     return true;
-                case R.id.drawer_basket:
-                    setInBasket(true);
 
-                    drawerLayout.close();
-
-                    //TODO UI update
-                    return true;
-                case R.id.drawer_archive:
-                    setArchived(true);
-                    drawerLayout.close();
-                    //TODO UI update
-                    return true;
                 default:
                     return false;
             }
 
+            NotesFragment notesFragment = NotesFragment.newInstance(column, inBasket, isArchived());
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction
+                    .replace(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)
+                    .replace(R.id.note_body_container, NoteBodyFragment.newInstance());
+            fragmentTransaction.commit();
+            setTitle(item.getTitle());
+            drawerLayout.close();
+
+            return true;
+
         });
+
 
     }
 

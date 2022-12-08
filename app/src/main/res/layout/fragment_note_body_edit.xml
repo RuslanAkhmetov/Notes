@@ -20,6 +20,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <TextView
+        android:id="@+id/edit_note_date"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:text="@string/note_date"
+        android:padding="@dimen/body_padding"
+        android:textSize="@dimen/note_body_text_size"
+        app:layout_constraintStart_toEndOf="@id/edit_note_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
         android:id="@+id/edit_note_body"
