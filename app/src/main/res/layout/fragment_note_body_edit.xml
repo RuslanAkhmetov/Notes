@@ -11,7 +11,7 @@
 
     <EditText
         android:id="@+id/edit_note_name"
-        android:layout_width="0px"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/note_name"
         android:padding="@dimen/name_padding"
@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/edit_note_date"
-        android:layout_width="0px"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/note_date"
         android:padding="@dimen/body_padding"

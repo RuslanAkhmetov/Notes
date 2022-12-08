@@ -20,16 +20,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.geekbrain.android1.ui.DatePickerDialog;
+import com.geekbrain.android1.ui.DatePickerDialogFragment;
 import com.geekbrain.android1.viewmodel.NotesViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.time.LocalDate;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link NoteBodyEditFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NoteBodyEditFragment extends Fragment {
+public class NoteBodyEditFragment extends Fragment implements DatePickerDialogFragment.CallbacksDate {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +39,7 @@ public class NoteBodyEditFragment extends Fragment {
     private static final String TAG = "Note_Body_Edit";
     private static final String NOTE = "Note_Body_Edit_Note";
     private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
 
 
     // TODO: Rename and change types of parameters
@@ -53,8 +56,6 @@ public class NoteBodyEditFragment extends Fragment {
      * this fragment using the provided parameters.
      */
     // TODO: Rename and change types and number of parameters
-
-
     public static NoteBodyEditFragment newInstance(boolean addNote, Note note) {
         NoteBodyEditFragment fragment = new NoteBodyEditFragment();
         Bundle args = new Bundle();
@@ -111,23 +112,24 @@ public class NoteBodyEditFragment extends Fragment {
         }
 
         if (note == null && !addNew) {
-            note =  model.getCurrentNote().copy();
+            note = model.getCurrentNote().copy();
         }
 
         try {
             if (note != null) {
-/*                if (note.getBackColor() != 0){
-                    view.setBackgroundColor(note.getBackColor());
-                }*/
+
                 EditText nameEditText = view.findViewById(R.id.edit_note_name);
                 EditText bodyEditText = view.findViewById(R.id.edit_note_body);
-                TextView nameDateText = view.findViewById(R.id.note_date);
-                nameDateText.setOnClickListener(v -> new DatePickerDialog(note.getNoteDate()).
-                        show(requireActivity().getSupportFragmentManager(), DIALOG_DATE));
+                TextView nameDateText = view.findViewById(R.id.edit_note_date);
+                nameDateText.setOnClickListener(v -> {
+                    DatePickerDialogFragment datePickerDialog = new DatePickerDialogFragment(note.getNoteDate());
+                    datePickerDialog.setTargetFragment(this, REQUEST_DATE);
+                    datePickerDialog.show(requireActivity().getSupportFragmentManager(), DIALOG_DATE);
+                });
 
-                if (note.getBackColor() == 0){
+                if (note.getBackColor() == 0) {
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border));
-                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null))  {
+                } else if (note.getBackColor() == getResources().getColor(R.color.teal_700, null)) {
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_teal_700));
                 } else if (note.getBackColor() == getResources().getColor(R.color.purple_200, null)) {
                     bodyEditText.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.frame_border_purple_200));
@@ -135,7 +137,7 @@ public class NoteBodyEditFragment extends Fragment {
                 ImageButton buttonPurple = view.findViewById(R.id.button_palette_purple);
                 ImageButton buttonTeal = view.findViewById(R.id.button_palette_teal);
 
-                buttonTeal.setOnClickListener(v ->{
+                buttonTeal.setOnClickListener(v -> {
                     int color = getResources().getColor(R.color.teal_700, null);
                     note.setBackColor(color);
                     requireActivity().findViewById(R.id.note_body_edit_container)
@@ -144,7 +146,7 @@ public class NoteBodyEditFragment extends Fragment {
 //                    initBodyEditFragment(requireActivity().findViewById(R.id.note_body_edit_container));
                 });
 
-                buttonPurple.setOnClickListener(v ->{
+                buttonPurple.setOnClickListener(v -> {
                     int color = getResources().getColor(R.color.purple_200, null);
                     note.setBackColor(color);
                     requireActivity().findViewById(R.id.note_body_edit_container)
@@ -155,6 +157,7 @@ public class NoteBodyEditFragment extends Fragment {
 
                 nameEditText.setText(note.getName());
                 bodyEditText.setText(note.getBody());
+                nameDateText.setText(note.getNoteDate().toString());
 
                 nameEditText.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -163,7 +166,7 @@ public class NoteBodyEditFragment extends Fragment {
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            note.setName(s.toString());
+                        note.setName(s.toString());
                     }
 
                     @Override
@@ -202,17 +205,17 @@ public class NoteBodyEditFragment extends Fragment {
         switch (id) {
             case R.id.save_action:
                 Log.i(TAG, "onItemAction: ");
-                if(addNew){
+                if (addNew) {
                     note.setArchived(false);
                     note.setInBasket(false);
                     Log.i(TAG, "onItemAction: note name" + note.getName());
-                   if(model.addNote(note) > 0){
-                       Toast.makeText(requireActivity(),getString(R.string.success_add), Toast.LENGTH_SHORT).show();
-                   }
+                    if (model.addNote(note) > 0) {
+                        Toast.makeText(requireActivity(), getString(R.string.success_add), Toast.LENGTH_SHORT).show();
+                    }
                 } else if (model.editCurrentNote(note) >= 0) {
-                    Toast.makeText(requireActivity(),getString(R.string.success_save), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), getString(R.string.success_save), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(requireActivity(),getString(R.string.unsuccess_save), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), getString(R.string.unsuccess_save), Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -229,5 +232,14 @@ public class NoteBodyEditFragment extends Fragment {
                 return false;
         }
         return false;
+    }
+
+    @Override
+    public void onDateSelected(LocalDate date) {
+        Log.i(TAG, "onDateSelected: "+ date.toString());
+        note.setNoteDate(date);
+        TextView dateText = requireActivity().findViewById(R.id.edit_note_date);
+        dateText.setText(date.toString());
+
     }
 }

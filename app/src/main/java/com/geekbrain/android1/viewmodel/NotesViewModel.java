@@ -237,7 +237,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
             currentNote.setName(note.getName());
             currentNote.setBody(note.getBody());
             currentNote.setBackColor(note.getBackColor());
-            currentNote.setNoteDate(LocalDate.now());
+            currentNote.setNoteDate(note.getNoteDate());
             Log.i(TAG, "editCurrentNote: " + LocalDate.now());
             return notes.getValue().indexOf(currentNote);
         } catch (Exception e) {
