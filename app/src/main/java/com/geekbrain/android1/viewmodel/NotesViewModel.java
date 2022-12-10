@@ -4,16 +4,13 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 
 import static com.geekbrain.android1.R.array.descriptions;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
-import com.geekbrain.android1.MainActivity;
 import com.geekbrain.android1.Note;
 import com.geekbrain.android1.NotesApplication;
 import com.geekbrain.android1.R;
@@ -24,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     private static final String TAG = "ViewModel";
@@ -77,6 +73,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
         } catch (Exception e){
             Log.i(TAG, "getNote: " + e.getMessage());
         }
+        return new Note();
     }
 
     public LiveData<List<Note>> initNotes() {
@@ -114,7 +111,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public Note getFirstInBasket() {
-        if (notes == null || notes.getValue().stream().filter(Note::isInBasket).count() == 0){
+        if (notes == null || notes.getValue().stream().noneMatch(Note::isInBasket)){
             return new Note();
         }
 
@@ -124,7 +121,7 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public Note getFirstArchived() {
-        if (notes == null || notes.getValue().stream().filter(Note::isArchived).count() == 0){
+        if (notes == null || notes.getValue().stream().noneMatch(Note::isArchived)){
             return new Note();
         }
 
@@ -135,7 +132,6 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     private void init() {
         List<Note> list = new ArrayList<>();
-        Context context = NotesApplication.getContext();
         for (int i = 0; i < resourceProvider.getStringArray(R.array.titles).length; i++) {
             boolean inBasket = i%7==0;
             boolean archived = i%5==0;
