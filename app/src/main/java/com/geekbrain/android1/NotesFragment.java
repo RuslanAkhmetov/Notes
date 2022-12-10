@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +38,7 @@ import java.util.stream.Collectors;
  */
 
 public class NotesFragment extends Fragment {
-    private final String TAG = "Notes_Fragment";
+    private static final String TAG = "Notes_Fragment";
     private static final String Q_COLUMNS = "qColumns";
     private static final String IN_BASKET = "ib_basket";
     private static final String ARCHIVED = "archived";
@@ -51,14 +49,16 @@ public class NotesFragment extends Fragment {
     private static final String CONFIRMATION = "Confirm_Dialog";
     private static final int REQUEST_CODE = 0;
 
-    private Callbacks callbacks = new Callbacks() {
+    private final Preferences preferences = Preferences.init();
+
+    private final Callbacks callbacks = new Callbacks() {
         @Override
         public void OnPositiveButtonClicked() {
             NotesViewModel model = new ViewModelProvider(getActivity(),
                     ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
             if (model.deleteNote(model.getCurrentNote()) >= 0) {
                 NotesFragment notesFragment = NotesFragment.newInstance(
-                        MainActivity.getColumn(), MainActivity.isInBasket(), MainActivity.isArchived());
+                        preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -127,9 +127,7 @@ public class NotesFragment extends Fragment {
         if (savedInstanceState == null) {
             model.initNotes().observe(requireActivity(),
                     notes -> initRecyclerView(recyclerView,
-                            notes.stream().filter(note -> {
-                                return note.isInBasket() == inBasket && note.isArchived() == archived;
-                            }).collect(Collectors.toList())
+                            notes.stream().filter(note -> note.isInBasket() == inBasket && note.isArchived() == archived).collect(Collectors.toList())
                             , columns));
         }
 
@@ -262,7 +260,7 @@ public class NotesFragment extends Fragment {
                 requireActivity(),
                 ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
         model.initNotes().observe(requireActivity(),
-                notes -> fragmentInit((ViewGroup) requireActivity().findViewById(id.fragment_container_view_tag), notes));
+                notes -> fragmentInit(requireActivity().findViewById(id.fragment_container_view_tag), notes));
     }
 
 

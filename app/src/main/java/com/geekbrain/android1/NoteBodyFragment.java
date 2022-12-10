@@ -1,9 +1,6 @@
 package com.geekbrain.android1;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -44,17 +41,18 @@ public class NoteBodyFragment extends Fragment {
     private static final String CONFIRMATION = "Confirm_Dialog";
     private static final int REQUEST_CODE = 0;
 
+    private final Preferences preferences = Preferences.init();
 
     private UUID uuidFragment;
     private Note note;
-    private Callbacks callbacks = new Callbacks() {
+    private final Callbacks callbacks = new Callbacks() {
         @Override
         public void OnPositiveButtonClicked() {
             NotesViewModel model = new ViewModelProvider(getActivity(),
                     ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
             if (model.deleteNote(model.getCurrentNote()) >= 0) {
                 NotesFragment notesFragment = NotesFragment.newInstance(
-                        MainActivity.getColumn(), MainActivity.isInBasket(), MainActivity.isArchived());
+                        preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -71,8 +69,8 @@ public class NoteBodyFragment extends Fragment {
 
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    String mParam1;
+    String mParam2;
 
 
     public NoteBodyFragment() {
@@ -113,17 +111,12 @@ public class NoteBodyFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
             uuidFragment = (UUID) getArguments().getSerializable(NOTE_UUID);
             note = getArguments().<Note>getParcelable(NOTE);
-            /*if (getActivity().getSupportFragmentManager().findFragmentByTag(CONFIRMATION) != null){
-                DialogFragment fragment = (DialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag(CONFIRMATION);
-                fragment.setCallbacks(callbacks);*/
-
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_note_body, container, false);
     }
@@ -134,16 +127,19 @@ public class NoteBodyFragment extends Fragment {
         initBodyFragment(view);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
-        if (MainActivity.isArchived() || MainActivity.isInBasket()) {
+
+        if (preferences.isArchived() || preferences.isInBasket()) {
             bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_restore_page_24);
             bottomNavigationView.getMenu().getItem(1).setTitle(R.string.restore_note);
         } else {
             bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_edit_24);
             bottomNavigationView.getMenu().getItem(1).setTitle(R.string.edit_note);
         }
-        if (MainActivity.isArchived()) {
+
+        if (preferences.isArchived()) {
             bottomNavigationView.getMenu().getItem(2).setVisible(false);
         }
+
         bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
 
     }
@@ -165,15 +161,15 @@ public class NoteBodyFragment extends Fragment {
             note = model.getCurrentNote() == null ? model.getFirst()
                     : model.getCurrentNote();
         }
-        if (MainActivity.isInBasket() && !note.isInBasket() ) {
+        if (preferences.isInBasket() && !note.isInBasket() ) {
             if (model.getFirstInBasket() != null) {
                 note = model.getFirstInBasket();
             }
-        } else if (MainActivity.isArchived() && !note.isArchived()) {
+        } else if (preferences.isArchived() && !note.isArchived()) {
             if (model.getFirstArchived()!= null) {
                 note = model.getFirstArchived();
             }
-        } else if (!MainActivity.isArchived() && !MainActivity.isInBasket() && (note.isInBasket() || note.isArchived()))
+        } else if (!preferences.isArchived() && !preferences.isInBasket() && (note.isInBasket() || note.isArchived()))
             note = model.getFirst();
 
         try {
@@ -251,9 +247,9 @@ public class NoteBodyFragment extends Fragment {
 
                 View list_layout = requireActivity().findViewById(R.id.fragment_container);
                 list_layout.setVisibility(View.VISIBLE);
-                NotesFragment notesFragment = NotesFragment.newInstance(MainActivity.getColumn()
-                        , MainActivity.isInBasket()
-                        , MainActivity.isArchived());
+                NotesFragment notesFragment = NotesFragment.newInstance(preferences.getColumn()
+                        , preferences.isInBasket()
+                        , preferences.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -264,7 +260,6 @@ public class NoteBodyFragment extends Fragment {
             default:
                 return false;
         }
-//        return false;
     }
 
 

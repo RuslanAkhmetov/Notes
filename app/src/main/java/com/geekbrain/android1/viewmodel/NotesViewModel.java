@@ -69,10 +69,14 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
     }
 
     public Note getNote(int index) {
-        if (index < notes.getValue().size())
-            return notes.getValue().get(index);
-        else
-            throw new NullPointerException(String.format(resourceProvider.getString(R.string.no_such_index), index));
+        try {
+            if (index < notes.getValue().size())
+                return notes.getValue().get(index);
+            else
+                throw new NullPointerException(String.format(resourceProvider.getString(R.string.no_such_index), index));
+        } catch (Exception e){
+            Log.i(TAG, "getNote: " + e.getMessage());
+        }
     }
 
     public LiveData<List<Note>> initNotes() {
@@ -110,23 +114,21 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
 
     @Override
     public Note getFirstInBasket() {
-        if (notes == null || notes.getValue().stream().filter(note -> note.isInBasket()).collect(Collectors.toList()).size() == 0){
-            MainActivity.setInBasket(false);
+        if (notes == null || notes.getValue().stream().filter(Note::isInBasket).count() == 0){
             return new Note();
-            //throw new NullPointerException("Note is not initialized or empty");
         }
-        currentNote = notes.getValue().stream().filter(note -> note.isInBasket()).findFirst().get();
+
+        currentNote = notes.getValue().stream().filter(Note::isInBasket).findFirst().get();
         return currentNote;
     }
 
     @Override
     public Note getFirstArchived() {
-        if (notes == null || notes.getValue().stream().filter(note -> note.isArchived()).collect(Collectors.toList()).size() == 0){
-            MainActivity.setArchived(false);
+        if (notes == null || notes.getValue().stream().filter(Note::isArchived).count() == 0){
             return new Note();
-            //throw new NullPointerException("Note is not initialized or empty");
         }
-        currentNote = notes.getValue().stream().filter(note -> note.isArchived() ).findFirst().get();
+
+        currentNote = notes.getValue().stream().filter(Note::isArchived).findFirst().get();
         return currentNote;
     }
 
@@ -135,7 +137,13 @@ public class NotesViewModel extends ViewModel implements ListNoteViewModel {
         List<Note> list = new ArrayList<>();
         Context context = NotesApplication.getContext();
         for (int i = 0; i < resourceProvider.getStringArray(R.array.titles).length; i++) {
-            list.add(new Note(resourceProvider.getStringArray(R.array.titles)[i], resourceProvider.getStringArray(descriptions)[i], generateDate(i), 0));
+            boolean inBasket = i%7==0;
+            boolean archived = i%5==0;
+            if (inBasket && archived){
+                archived = false;
+            }
+            list.add(new Note(resourceProvider.getStringArray(R.array.titles)[i], resourceProvider.getStringArray(descriptions)[i],
+                    generateDate(i), 0, inBasket, archived));
             Log.i(TAG, "init: " + list.get(i).getName());
         }
 
