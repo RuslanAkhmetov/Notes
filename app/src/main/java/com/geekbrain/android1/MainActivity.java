@@ -19,49 +19,52 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Type;
+import java.util.prefs.Preferences;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main_Activity";
     private static final String KEY = "key";
-    private static final String NOTES_FRAGMENT = "NotesFragment";
 
-    private SharedPreferences sharedPreferences = null;
-    Preferences preferences = new Preferences();
+    private static final String NOTES_FRAGMENT = "NotesFragment";
+    private static final String MAINACTIVITY = "com.geekbrain.android1.shared_prefs.Main_Activity";
+
+    public SharedPreferences sharedPreferences = null;
+    ActivitySettings activitySettings = new ActivitySettings();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getPreferences(MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(MAINACTIVITY, MODE_PRIVATE);
 
         String savedPreferences = sharedPreferences.getString(KEY, null);
 
 
         if (savedPreferences == null){
-             preferences = Preferences.init();
+             activitySettings = ActivitySettings.init();
         } else{
             try {
-                preferences = Preferences.initFromGSON(new GsonBuilder().create().fromJson(savedPreferences,
-                        (Type) Preferences.class));
+                activitySettings = ActivitySettings.initFromGSON(new GsonBuilder().create().fromJson(savedPreferences,
+                        (Type) ActivitySettings.class));
                 Log.i(TAG, "onCreate: " + savedPreferences);
             } catch (Exception e) {
-                preferences = Preferences.init();
+                activitySettings = ActivitySettings.init();
                 Log.i(TAG, "onCreate: " + e.getMessage());
             }
         }
 
-        if (preferences.isArchived()){
+        if (activitySettings.isArchived()){
             setTitle(R.string.archive_drawer_action);
-        } else if (preferences.isInBasket()){
+        } else if (activitySettings.isInBasket()){
             setTitle(R.string.basket_drawer_action);
         } else {
             setTitle(R.string.notes_drawer_action);
         }
 
-        NotesFragment notesFragment = NotesFragment.newInstance(preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
+        NotesFragment notesFragment = NotesFragment.newInstance(activitySettings.getColumn(), activitySettings.isInBasket(), activitySettings.isArchived());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.design_default_color_primary));
@@ -98,16 +101,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.cozy_view_action:
-                preferences.setColumn(preferences.getColumn() == 1 ? 2 : 1);
-                if (preferences.getColumn() == 1) {
+                activitySettings.setColumn(activitySettings.getColumn() == 1 ? 2 : 1);
+                if (activitySettings.getColumn() == 1) {
                     Toast.makeText(this, R.string.linear_view, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, R.string.two_columns, Toast.LENGTH_SHORT).show();
                 }
-                String preferencesJson = new GsonBuilder().create().toJson(preferences);
+                String preferencesJson = new GsonBuilder().create().toJson(activitySettings);
                 sharedPreferences.edit().putString(KEY, preferencesJson).apply();
 
-                NotesFragment notesFragment = NotesFragment.newInstance(preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
+                NotesFragment notesFragment = NotesFragment.newInstance(activitySettings.getColumn(), activitySettings.isInBasket(), activitySettings.isArchived());
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction
                         .replace(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)
@@ -124,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
     private void initDrawer(Toolbar toolbar) {
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
-        Preferences preferences = Preferences.init();
-        Log.i(TAG, "initDrawer: " + preferences.toString());
+        ActivitySettings activitySettings = ActivitySettings.init();
+        Log.i(TAG, "initDrawer: " + activitySettings.toString());
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
@@ -140,23 +143,23 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             switch (id) {
                 case R.id.drawer_notes:
-                    preferences.setArchived(false);
-                    preferences.setInBasket(false);
+                    activitySettings.setArchived(false);
+                    activitySettings.setInBasket(false);
                     break;
 
                 case R.id.drawer_notification:
-                    preferences.setArchived(false);
-                    preferences.setInBasket(false);
+                    activitySettings.setArchived(false);
+                    activitySettings.setInBasket(false);
                     break;
 
                 case R.id.drawer_basket:
-                    preferences.setInBasket(true);
-                    preferences.setArchived(false);
+                    activitySettings.setInBasket(true);
+                    activitySettings.setArchived(false);
                     break;
 
                 case R.id.drawer_archive:
-                    preferences.setArchived(true);
-                    preferences.setInBasket(false);
+                    activitySettings.setArchived(true);
+                    activitySettings.setInBasket(false);
                     break;
 
                 case R.id.drawer_SETTINGS:
@@ -168,14 +171,14 @@ public class MainActivity extends AppCompatActivity {
                     return false;
             }
 
-            String preferencesJson = new GsonBuilder().create().toJson(preferences);
+            String preferencesJson = new GsonBuilder().create().toJson(activitySettings);
 
             Log.i(TAG, "initDrawer: " +  preferencesJson);
 
             sharedPreferences.edit()
                     .putString(KEY, preferencesJson)
                     .apply();
-            NotesFragment notesFragment = NotesFragment.newInstance(preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
+            NotesFragment notesFragment = NotesFragment.newInstance(activitySettings.getColumn(), activitySettings.isInBasket(), activitySettings.isArchived());
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction
                     .replace(R.id.fragment_container, notesFragment, NOTES_FRAGMENT)

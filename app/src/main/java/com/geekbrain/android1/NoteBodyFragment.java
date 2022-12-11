@@ -41,7 +41,7 @@ public class NoteBodyFragment extends Fragment {
     private static final String CONFIRMATION = "Confirm_Dialog";
     private static final int REQUEST_CODE = 0;
 
-    private final Preferences preferences = Preferences.init();
+    private final ActivitySettings activitySettings = ActivitySettings.init();
 
     private UUID uuidFragment;
     private Note note;
@@ -52,7 +52,7 @@ public class NoteBodyFragment extends Fragment {
                     ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
             if (model.deleteNote(model.getCurrentNote()) >= 0) {
                 NotesFragment notesFragment = NotesFragment.newInstance(
-                        preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
+                        activitySettings.getColumn(), activitySettings.isInBasket(), activitySettings.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -128,7 +128,7 @@ public class NoteBodyFragment extends Fragment {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation);
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
 
-        if (preferences.isArchived() || preferences.isInBasket()) {
+        if (activitySettings.isArchived() || activitySettings.isInBasket()) {
             bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.ic_baseline_restore_page_24);
             bottomNavigationView.getMenu().getItem(1).setTitle(R.string.restore_note);
         } else {
@@ -136,11 +136,11 @@ public class NoteBodyFragment extends Fragment {
             bottomNavigationView.getMenu().getItem(1).setTitle(R.string.edit_note);
         }
 
-        if (preferences.isArchived()) {
+        if (activitySettings.isArchived()) {
             bottomNavigationView.getMenu().getItem(2).setVisible(false);
         }
 
-        bottomNavigationView.setOnItemSelectedListener(item -> onItemAction(item));
+        bottomNavigationView.setOnItemSelectedListener(this::onItemAction);
 
     }
 
@@ -161,15 +161,15 @@ public class NoteBodyFragment extends Fragment {
             note = model.getCurrentNote() == null ? model.getFirst()
                     : model.getCurrentNote();
         }
-        if (preferences.isInBasket() && !note.isInBasket() ) {
+        if (activitySettings.isInBasket() && !note.isInBasket() ) {
             if (model.getFirstInBasket() != null) {
                 note = model.getFirstInBasket();
             }
-        } else if (preferences.isArchived() && !note.isArchived()) {
+        } else if (activitySettings.isArchived() && !note.isArchived()) {
             if (model.getFirstArchived()!= null) {
                 note = model.getFirstArchived();
             }
-        } else if (!preferences.isArchived() && !preferences.isInBasket() && (note.isInBasket() || note.isArchived()))
+        } else if (!activitySettings.isArchived() && !activitySettings.isInBasket() && (note.isInBasket() || note.isArchived()))
             note = model.getFirst();
 
         try {
@@ -247,9 +247,9 @@ public class NoteBodyFragment extends Fragment {
 
                 View list_layout = requireActivity().findViewById(R.id.fragment_container);
                 list_layout.setVisibility(View.VISIBLE);
-                NotesFragment notesFragment = NotesFragment.newInstance(preferences.getColumn()
-                        , preferences.isInBasket()
-                        , preferences.isArchived());
+                NotesFragment notesFragment = NotesFragment.newInstance(activitySettings.getColumn()
+                        , activitySettings.isInBasket()
+                        , activitySettings.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)

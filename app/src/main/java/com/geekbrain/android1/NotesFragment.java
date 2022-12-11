@@ -49,7 +49,7 @@ public class NotesFragment extends Fragment {
     private static final String CONFIRMATION = "Confirm_Dialog";
     private static final int REQUEST_CODE = 0;
 
-    private final Preferences preferences = Preferences.init();
+    private final ActivitySettings activitySettings = ActivitySettings.init();
 
     private final Callbacks callbacks = new Callbacks() {
         @Override
@@ -58,7 +58,7 @@ public class NotesFragment extends Fragment {
                     ViewModelProvider.Factory.from(NotesViewModel.initializer)).get(NotesViewModel.class);
             if (model.deleteNote(model.getCurrentNote()) >= 0) {
                 NotesFragment notesFragment = NotesFragment.newInstance(
-                        preferences.getColumn(), preferences.isInBasket(), preferences.isArchived());
+                        activitySettings.getColumn(), activitySettings.isInBasket(), activitySettings.isArchived());
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, notesFragment)
@@ -94,6 +94,8 @@ public class NotesFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

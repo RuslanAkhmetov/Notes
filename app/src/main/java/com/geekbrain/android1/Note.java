@@ -5,11 +5,16 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.geekbrain.android1.viewmodel.NoteForGSON;
+
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.UUID;
 
 public class Note implements Parcelable {
 
+    private final UUID uuid;
     private String name;
     private String body;
     private LocalDate noteDate;
@@ -46,6 +51,16 @@ public class Note implements Parcelable {
         this.archived = archived;
     }
 
+    public Note(NoteForGSON noteForGSON) {
+        this.uuid = UUID.fromString(noteForGSON.getUuid());
+        this.name = noteForGSON.getName();
+        this.body = noteForGSON.getBody();
+        this.noteDate = Instant.ofEpochSecond(noteForGSON.getNoteDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+        this.backColor = noteForGSON.getBackColor();
+        this.inBasket = noteForGSON.isInBasket();
+        this.archived = noteForGSON.isArchived();
+    }
+
     public String getName() {
         return name;
     }
@@ -70,7 +85,7 @@ public class Note implements Parcelable {
         this.noteDate = noteDate;
     }
 
-    private final UUID uuid;
+
 
     public UUID getUuid() {
         return uuid;

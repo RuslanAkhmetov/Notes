@@ -1,25 +1,25 @@
 package com.geekbrain.android1;
 
 
-public class Preferences  {
-    public Preferences(){
+public class ActivitySettings {
+    public ActivitySettings(){
         column = 1;
         inBasket = false;
         archived = false;
     }
 
-    private static Preferences INSTANCE;
+    private static ActivitySettings INSTANCE;
 
-    public static Preferences init(){
+    public static ActivitySettings init(){
 
         if (INSTANCE == null) {
-            INSTANCE = new Preferences();
+            INSTANCE = new ActivitySettings();
         }
         return INSTANCE;
     }
 
-    public static Preferences initFromGSON(Preferences preferences){
-        Preferences.INSTANCE = preferences;
+    public static ActivitySettings initFromGSON(ActivitySettings activitySettings){
+        ActivitySettings.INSTANCE = activitySettings;
         return INSTANCE;
     }
 
