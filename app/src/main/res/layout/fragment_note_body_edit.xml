@@ -5,37 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:orientation="vertical"
-    android:focusable="true">
+    android:focusable="true"
+    android:orientation="vertical">
 
 
     <EditText
         android:id="@+id/edit_note_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/note_name"
+        android:hint="@string/note_name"
         android:padding="@dimen/name_padding"
+        android:text="@string/note_name"
         android:textSize="@dimen/note_name_text_size"
+        app:layout_constraintEnd_toStartOf="@id/edit_note_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/edit_note_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/note_date"
         android:padding="@dimen/body_padding"
+        android:text="@string/note_date"
         android:textSize="@dimen/note_body_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/edit_note_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edit_note_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="start"
+        android:hint="@string/note_body"
         android:padding="@dimen/body_padding"
         android:text="@string/note_body"
         android:textSize="@dimen/note_body_text_size"
@@ -49,17 +51,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_note_body"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_note_body">
 
         <ImageButton
             android:id="@+id/button_palette_purple"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_purple_custom"
-/>
+            android:background="@drawable/button_purple_custom" />
 
         <ImageButton
             android:id="@+id/button_palette_teal"
@@ -73,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:itemIconTint="@color/cardview_light_background"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
     <!--        app:menu="@menu/bottom_navigation_menu"/>-->
 
 

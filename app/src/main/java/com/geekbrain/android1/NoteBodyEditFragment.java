@@ -221,6 +221,8 @@ public class NoteBodyEditFragment extends Fragment implements DatePickerDialogFr
 
             case R.id.back_action:
                 //updateNotesListData();
+
+                model.updateDB();
                 NotesFragment notesFragment = new NotesFragment();
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()

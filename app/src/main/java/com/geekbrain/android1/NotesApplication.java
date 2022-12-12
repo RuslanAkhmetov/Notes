@@ -2,6 +2,7 @@ package com.geekbrain.android1;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class NotesApplication extends Application {
 
@@ -27,4 +28,6 @@ public class NotesApplication extends Application {
         mContext = this.getApplicationContext();
         //resourceProvider = new ResourceProvider(this);
     }
+
+
 }
